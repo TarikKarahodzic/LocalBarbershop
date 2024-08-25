@@ -1,6 +1,6 @@
 import { Text, View, StyleSheet, Image, Pressable } from 'react-native';
 import { Barber } from '../types';
-import { Link } from 'expo-router';
+import { Link, useSegments } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 
 export const defaultBarberImage =
@@ -11,8 +11,10 @@ type BarberListItemProps = {
 }
 
 const BarberListItem = ({ barber }: BarberListItemProps) => {
+  const segments = useSegments();
+  
   return (
-    <Link href={`/menu/${barber.id}`} asChild>
+    <Link href={`/${segments[0]}/menu/${barber.id}`} asChild>
       <Pressable style={mainStyles.container}>
         <Image
           source={{ uri: barber.image || defaultBarberImage }}

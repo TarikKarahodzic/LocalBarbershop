@@ -1,6 +1,6 @@
 import { Text, View, StyleSheet, Image, Pressable } from 'react-native';
 import { Service } from '../types';
-import { Link } from 'expo-router';
+import { Link, useSegments } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
 
 export const defaultServiceImage =
@@ -10,7 +10,7 @@ type ServiceListItemProps = {
     service: Service;
 }
 
-const ServiceListItem = ({ service }: ServiceListItemProps) => {
+const ServiceListItem = ({ service }: ServiceListItemProps) => {   
     return (
         <View style={mainStyles.container}>
             <View style={serviceStyles.serviceBox}>
