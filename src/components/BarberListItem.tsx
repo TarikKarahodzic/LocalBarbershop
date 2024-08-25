@@ -2,6 +2,7 @@ import { Text, View, StyleSheet, Image, Pressable } from 'react-native';
 import { Barber } from '../types';
 import { Link, useSegments } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
+import Colors from '../constants/Colors';
 
 export const defaultBarberImage =
   'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png';
@@ -12,14 +13,13 @@ type BarberListItemProps = {
 
 const BarberListItem = ({ barber }: BarberListItemProps) => {
   const segments = useSegments();
-  
+
   return (
-    <Link href={`/${segments[0]}/menu/${barber.id}`} asChild>
+    <><Link href={`/${segments[0]}/menu/${barber.id}`} asChild>
       <Pressable style={mainStyles.container}>
         <Image
           source={{ uri: barber.image || defaultBarberImage }}
-          style={mainStyles.image}
-        />
+          style={mainStyles.image} />
         <View style={mainStyles.textContainer}>
           <Text style={mainStyles.name}>{barber.name}</Text>
           <View style={barberStyles.additionalInfo}>
@@ -33,7 +33,17 @@ const BarberListItem = ({ barber }: BarberListItemProps) => {
           </View>
         </View>
       </Pressable>
-    </Link>
+    </Link><Link href={`/(admin)/menu/create`}>
+        <Pressable>
+          {({ pressed }) => (
+            <FontAwesome
+              name="pencil"
+              size={25}
+              color={Colors.light.tint}
+              style={{ marginRight: 15, opacity: pressed ? 0.6 : 2 }} />
+          )}
+        </Pressable>
+      </Link></>
   );
 }
 // This bit makes a skelet for some part of the screen

@@ -2,6 +2,7 @@ import { Text, View, StyleSheet, Image, Pressable } from 'react-native';
 import { Service } from '../types';
 import { Link, useSegments } from 'expo-router';
 import { FontAwesome } from '@expo/vector-icons';
+import Colors from '../constants/Colors';
 
 export const defaultServiceImage =
     'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png';
@@ -10,7 +11,7 @@ type ServiceListItemProps = {
     service: Service;
 }
 
-const ServiceListItem = ({ service }: ServiceListItemProps) => {   
+const ServiceListItem = ({ service }: ServiceListItemProps) => {
     return (
         <View style={mainStyles.container}>
             <View style={serviceStyles.serviceBox}>
@@ -20,6 +21,16 @@ const ServiceListItem = ({ service }: ServiceListItemProps) => {
                 />
                 <Text style={serviceStyles.serviceTitle}>{service.name}</Text>
             </View>
+            <Pressable>
+                {({ pressed }) => (
+                    <FontAwesome
+                        name="edit"
+                        size={20}
+                        color={Colors.light.tint}
+                        style={{ marginRight: 15, opacity: pressed ? 0.6 : 2 }}
+                    />
+                )}
+            </Pressable>
         </View>
     );
 }
