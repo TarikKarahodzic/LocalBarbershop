@@ -15,11 +15,12 @@ const BarberListItem = ({ barber }: BarberListItemProps) => {
   const segments = useSegments();
 
   return (
-    <><Link href={`/${segments[0]}/menu/${barber.id}`} asChild>
+    <Link href={`/${segments[0]}/menu/${barber.id}`} asChild>
       <Pressable style={mainStyles.container}>
         <Image
           source={{ uri: barber.image || defaultBarberImage }}
-          style={mainStyles.image} />
+          style={mainStyles.image}
+        />
         <View style={mainStyles.textContainer}>
           <Text style={mainStyles.name}>{barber.name}</Text>
           <View style={barberStyles.additionalInfo}>
@@ -33,69 +34,42 @@ const BarberListItem = ({ barber }: BarberListItemProps) => {
           </View>
         </View>
       </Pressable>
-    </Link><Link href={`/(admin)/menu/create`}>
-        <Pressable>
-          {({ pressed }) => (
-            <FontAwesome
-              name="pencil"
-              size={25}
-              color={Colors.light.tint}
-              style={{ marginRight: 15, opacity: pressed ? 0.6 : 2 }} />
-          )}
-        </Pressable>
-      </Link></>
+    </Link>
   );
 }
-// This bit makes a skelet for some part of the screen
-// or a whole part. For example ill use this for the barbers section on the app
-// Can make another one for top part (services) and bottom part (products)
 
 export default BarberListItem;
 
 const mainStyles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexDirection: 'row', // Align items horizontally
+    alignItems: 'center', // Center items vertically
     backgroundColor: '#FFF',
-    paddingTop: 20,
+    paddingVertical: 10,
     paddingHorizontal: 20,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#121212'
   },
   name: {
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 5,
-    color: '#121212'
+    color: '#121212',
   },
   info: {
     fontSize: 14,
+    color: '#121212',
   },
   image: {
     width: 70,
     height: 70,
     borderRadius: 40,
-    marginRight: 20,
+    marginRight: 20, // Add space between the image and the text
   },
   textContainer: {
-    flex: 1,
-  },
-  row: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flex: 1, // Take up the remaining space
   },
 });
 
 const barberStyles = StyleSheet.create({
-  barberContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
   additionalInfo: {
     flexDirection: 'row',
     alignItems: 'center',
