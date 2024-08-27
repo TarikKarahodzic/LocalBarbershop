@@ -1,18 +1,14 @@
-import { useState } from "react";
-import { Text, View, StyleSheet, TextInput, Image } from "react-native";
-
-import { defaultBarberImage } from "@/src/components/BarberListItem";
 import Button from "@/src/components/Button";
 import Colors from "@/src/constants/Colors";
-
-import * as ImagePicker from 'expo-image-picker';
+import { useState } from "react";
+import { Text, View, StyleSheet, TextInput } from "react-native";
 import { Stack } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
 
 const CreateProductScreen = () => {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [timestamp, setTimeStamp] = useState('');
 
     const [errors, setErrors] = useState('');
     const [image, setImage] = useState<string | null>(null);
@@ -20,25 +16,26 @@ const CreateProductScreen = () => {
     const navigation = useNavigation();
 
     const resetFields = () => {
-        setName('');
-        setEmail('');
-        setPhoneNumber('');
+        setTitle('');
+        setDescription('');
+        setTimeStamp('');
     };
 
     const validateInput = () => {
         setErrors('');
-        if (!name) {
-            setErrors('Name is required');
+        if (!title) {
+            setErrors('Please enter the title');
             return false;
         }
-        if (!email) {
-            setErrors('Email is required');
+        if (!description) {
+            setErrors('Forgot to write some description');
             return false;
         }
-        if (isNaN(parseFloat(phoneNumber))) {
-            setErrors('Phone number is incorrect. Use numbers');
+        if (!timestamp) {
+            setErrors('Forgot to set the timestamp');
             return false;
         }
+
         return true;
     };
 
@@ -47,54 +44,38 @@ const CreateProductScreen = () => {
             return;
         }
 
-        console.warn('Creating product: ', name);
+        console.warn('Uploading news: ', title);
 
         // Save in database
 
         resetFields();
     };
 
-    const pickImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-        });
-
-        if(!result.canceled) {
-            setImage(result.assets[0].uri);
-        }
-    };
-
     return (
         <View style={styles.container}>
-            <Stack.Screen options={{ title: 'Add Barber' }}/>
-            
-            <Image source={{ uri: image || defaultBarberImage }} style={styles.image} />
-            <Text onPress={pickImage} style={styles.textButton}>Select image</Text>
+            <Stack.Screen options={{ title: 'Add news' }}/>
 
-            <Text style={styles.label}>Full name</Text>
+            <Text style={styles.label}>Title</Text>
             <TextInput
-                value={name}
-                onChangeText={setName}
-                placeholder="John Doe"
+                value={title}
+                onChangeText={setTitle}
+                placeholder="New barber soon"
                 style={styles.input}
             />
 
-            <Text style={styles.label}>Email</Text>
+            <Text style={styles.label}>Description</Text>
             <TextInput
-                value={email}
-                onChangeText={setEmail}
-                placeholder="john.doe@example.com"
+                value={description}
+                onChangeText={setDescription}
+                placeholder="Here is the place for some description. New barber coming soon!"
                 style={styles.input}
             />
+            <Text style={styles.label}>Time stamp</Text>
             <TextInput
-                value={phoneNumber}
-                onChangeText={setPhoneNumber}
-                placeholder="+387644035111"
+                value={timestamp}
+                onChangeText={setTimeStamp}
+                placeholder="2024-08-18"
                 style={styles.input}
-                keyboardType="numeric"
             />
             <Text style={{ color: 'red' }}>{errors}</Text>
             <Button onPress={onCreate} text="Create"></Button>
@@ -131,7 +112,6 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginTop: 5,
         marginBottom: 20,
-
     },
 });
 

@@ -12,7 +12,7 @@ function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>['name'];
   color: string;
 }) {
-  return <FontAwesome size={20} style={{ marginBottom: -3 }} {...props} />;
+  return <FontAwesome size={22} style={{ marginBottom: -3 }} {...props} />;
 }
 
 export default function TabLayout() {
@@ -31,34 +31,44 @@ export default function TabLayout() {
         headerShown: useClientOnlyValue(false, true),
       }}>
 
+      <Tabs.Screen
+        name="news"
+        options={{
+          tabBarIcon: ({ color }) => <TabBarIcon name="newspaper-o" color={color} />,
+          title: 'News', headerRight: () => (
+            <Link href="/(admin)/createNews" asChild>
+              <Pressable>
+                {({ pressed }) => (
+                  <FontAwesome
+                    name="plus-square-o"
+                    size={25}
+                    color={Colors.light.tint}
+                    style={{ marginRight: 15, opacity: pressed ? 0.6 : 2 }}
+                  />
+                )}
+              </Pressable>
+            </Link>
+          )
+        }}
+      />
+
+      {/* This is for hiding a tab bar icon */}
       <Tabs.Screen name="index" options={{ href: null }} />
+      <Tabs.Screen name="createNews" options={{ href: null}} />
 
       <Tabs.Screen
         name="menu"
         options={{
           title: 'Menu',
           headerShown: false,
-          tabBarIcon: ({ color }) => <TabBarIcon name="cutlery" color={color} />,
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
-                    size={25}
-                    color={Colors[colorScheme ?? 'light'].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
+          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
         }}
       />
+
       <Tabs.Screen
-        name="two"
+        name="panel"
         options={{
-          title: 'Orders',
+          title: 'Panel',
           tabBarIcon: ({ color }) => <TabBarIcon name="list" color={color} />,
         }}
       />

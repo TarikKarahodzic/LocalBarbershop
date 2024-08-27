@@ -1,11 +1,14 @@
+import { useState } from "react";
+import { Text, View, StyleSheet, TextInput, Image, Pressable } from "react-native";
+
 import { defaultBarberImage } from "@/src/components/BarberListItem";
 import Button from "@/src/components/Button";
 import Colors from "@/src/constants/Colors";
-import { useState } from "react";
-import { Text, View, StyleSheet, TextInput, Image } from "react-native";
+
 import * as ImagePicker from 'expo-image-picker';
-import { Stack, useLocalSearchParams } from "expo-router";
+import { Link, Stack, useLocalSearchParams } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 
 const CreateProductScreen = () => {
     const [name, setName] = useState('');
@@ -69,7 +72,9 @@ const CreateProductScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Stack.Screen options={{ title: isUpdating ? 'Update barber' : 'Add Barber' }} />
+            <Stack.Screen options={{
+                title: 'Add Barber'
+            }} />
 
             <Image source={{ uri: image || defaultBarberImage }} style={styles.image} />
             <Text onPress={pickImage} style={styles.textButton}>Select image</Text>
@@ -98,8 +103,6 @@ const CreateProductScreen = () => {
             />
             <Text style={{ color: 'red' }}>{errors}</Text>
             <Button onPress={onCreate} text="Create"></Button>
-
-            <Button onPress={() => navigation.goBack()} text="Back" />
         </View>
     );
 };

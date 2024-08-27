@@ -1,8 +1,5 @@
-import { Text, View, StyleSheet, Image, Pressable } from 'react-native';
+import { Text, View, StyleSheet, Image } from 'react-native';
 import { Service } from '../types';
-import { Link, useSegments } from 'expo-router';
-import { FontAwesome } from '@expo/vector-icons';
-import Colors from '../constants/Colors';
 
 export const defaultServiceImage =
     'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png';

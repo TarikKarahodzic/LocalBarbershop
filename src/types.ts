@@ -11,6 +11,13 @@ export type Service = {
   name: string;
 };
 
+export type News = {
+  id: number,
+  title: string,
+  description: string,
+  timestamp: string,
+}
+
 // export const OrderStatusList: OrderStatus[] = [
 //   'New',
 //   'Cooking',

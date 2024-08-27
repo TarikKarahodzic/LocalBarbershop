@@ -1,5 +1,5 @@
-import React from 'react';
-import { Text, FlatList, ScrollView, StyleSheet, Dimensions, View, Pressable } from 'react-native';
+import React, { useEffect } from 'react';
+import { Text, FlatList, ScrollView, StyleSheet, Dimensions, View, Pressable, LayoutAnimation } from 'react-native';
 import barbers from '@/assets/data/barbers';
 import services from '@/assets/data/services';
 import BarberListItem from '@/src/components/BarberListItem';
@@ -33,7 +33,7 @@ export default function TabOneScreen() {
       <FlatList
         data={services}
         renderItem={({ item }) => (
-          <View style={[styles.serviceItem, { width: serviceItemWidth }]}>
+          <View key={item.id} style={[styles.serviceItem, { width: serviceItemWidth }]}>
             <ServiceListItem service={item} />
           </View>
         )}

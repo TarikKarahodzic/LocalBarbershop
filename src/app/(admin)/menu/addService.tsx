@@ -1,11 +1,12 @@
+import { useState } from "react";
+import { Text, View, StyleSheet, TextInput, Image } from "react-native";
+
 import { defaultBarberImage } from "@/src/components/BarberListItem";
 import Button from "@/src/components/Button";
 import Colors from "@/src/constants/Colors";
-import { useState } from "react";
-import { Text, View, StyleSheet, TextInput, Image } from "react-native";
+
 import * as ImagePicker from 'expo-image-picker';
 import { Stack } from "expo-router";
-import { useNavigation } from "@react-navigation/native";
 
 const CreateProductScreen = () => {
     const [name, setName] = useState('');
@@ -13,8 +14,6 @@ const CreateProductScreen = () => {
 
     const [errors, setErrors] = useState('');
     const [image, setImage] = useState<string | null>(null);
-
-    const navigation = useNavigation();
 
     const resetFields = () => {
         setName('');
@@ -54,7 +53,7 @@ const CreateProductScreen = () => {
             quality: 1,
         });
 
-        if(!result.canceled) {
+        if (!result.canceled) {
             setImage(result.assets[0].uri);
         }
     };
@@ -62,7 +61,7 @@ const CreateProductScreen = () => {
     return (
         <View style={styles.container}>
             <Stack.Screen options={{ title: 'Add Service' }} />
-            
+
             <Image source={{ uri: image || defaultBarberImage }} style={styles.image} />
             <Text onPress={pickImage} style={styles.textButton}>Select image</Text>
 
@@ -83,8 +82,6 @@ const CreateProductScreen = () => {
             />
             <Text style={{ color: 'red' }}>{errors}</Text>
             <Button onPress={onCreate} text="Create"></Button>
-        
-            <Button onPress={() => navigation.goBack()} text="Back" />
         </View>
     );
 };
