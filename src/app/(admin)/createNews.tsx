@@ -5,13 +5,12 @@ import { Text, View, StyleSheet, TextInput } from "react-native";
 import { Stack } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
 
-const CreateProductScreen = () => {
+const CreateNewsScreen = () => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [timestamp, setTimeStamp] = useState('');
 
     const [errors, setErrors] = useState('');
-    const [image, setImage] = useState<string | null>(null);
 
     const navigation = useNavigation();
 
@@ -115,7 +114,7 @@ const styles = StyleSheet.create({
     },
 });
 
-export default CreateProductScreen;
+export default CreateNewsScreen;
 
 // ili napraviti novi screen gdje ce se samo vidjeti kod
 // admina, i imat ce podijeljeno Barbers pa add, edit, remove

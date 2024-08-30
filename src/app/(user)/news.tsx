@@ -6,11 +6,9 @@ import NewsListItem from '@/src/components/NewsListItem';
 
 export default function NewsScreen() {
     return (
-        <ScrollView>
-            <FlatList
-                data={news}
-                renderItem={({ item }) => <NewsListItem news={item} />}
-            />
-        </ScrollView>
+        <FlatList
+            data={news}
+            renderItem={({ item }) => <NewsListItem news={item} />}
+        />
     );
 };

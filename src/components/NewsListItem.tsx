@@ -1,14 +1,11 @@
 import { View, Text, StyleSheet } from 'react-native';
 import { News } from '../types';
-import { useSegments } from 'expo-router';
 
 type NewsListItemProps = {
     news: News;
 }
 
 const NewsListItem = ({ news }: NewsListItemProps) => {
-    const segments = useSegments();
-
     return (
         <View style={styles.newsItemContainer}>
             <View style={styles.textContainer}>

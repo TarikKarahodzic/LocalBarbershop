@@ -3,12 +3,21 @@ export type Barber = {
   image: string | null;
   name: string;
   email: string;
+  phoneNumber: string;
 };
 
 export type Service = {
   id: number;
   image: string | null;
   name: string;
+  price: number;
+};
+
+export type Product = {
+  id: number;
+  image: string | null;
+  name: string;
+  price: number;
 };
 
 export type News = {

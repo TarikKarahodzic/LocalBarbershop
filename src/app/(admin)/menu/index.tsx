@@ -1,98 +1,120 @@
-import React, { useEffect } from 'react';
-import { Text, FlatList, ScrollView, StyleSheet, Dimensions, View, Pressable, LayoutAnimation } from 'react-native';
-import barbers from '@/assets/data/barbers';
-import services from '@/assets/data/services';
-import BarberListItem from '@/src/components/BarberListItem';
-import ServiceListItem from '@/src/components/ServiceListItem';
-import { Link } from 'expo-router';
-import { FontAwesome } from '@expo/vector-icons';
-import Colors from '@/src/constants/Colors';
+import { Text, View, StyleSheet, Image, ScrollView, SafeAreaView } from 'react-native';
 
-const { width } = Dimensions.get('window'); // Get the width of the screen
+import barbers from '@/assets/data/barbers';
+import BarberListItem from '@/src/components/BarberListItem';
 
 export default function TabOneScreen() {
-  const serviceItemWidth = width / 4; // Width of each item to fit 4 items on the screen
-
   return (
-    <ScrollView style={styles.container}>
-      {/* Popular Services Section */}
-      <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTitle}>Popular Services</Text>
-        <Link href="/">
-          <Pressable>
-            {({ pressed }) => (
-              <FontAwesome
-                name="pencil"
-                size={25}
-                color={Colors.light.tint}
-                style={{ marginRight: 15, opacity: pressed ? 0.6 : 2 }} />
-            )}
-          </Pressable>
-        </Link>
-      </View>
-      <FlatList
-        data={services}
-        renderItem={({ item }) => (
-          <View key={item.id} style={[styles.serviceItem, { width: serviceItemWidth }]}>
-            <ServiceListItem service={item} />
+    <SafeAreaView style={mainStyles.container}>
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <Text style={mainStyles.sectionTitle}>Popular Services</Text>
+        <View style={serviceStyles.servicesContainer}>
+          <View style={serviceStyles.serviceBox}>
+            <Image source={require('../../img/beard.jpg')} style={serviceStyles.serviceImage} />
+            <Text style={serviceStyles.serviceTitle}>Beard trim</Text>
           </View>
-        )}
-        keyExtractor={(item) => item.id.toString()}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.servicesList}
-      />
-
-      {/* Popular Barbers Section */}
-      <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTitle}>Popular Barbers</Text>
-        <Link href="/">
-          <Pressable>
-            {({ pressed }) => (
-              <FontAwesome
-                name="pencil"
-                size={25}
-                color={Colors.light.tint}
-                style={{ marginRight: 15, opacity: pressed ? 0.6 : 2 }} />
-            )}
-          </Pressable>
-        </Link>
-      </View>
-      <FlatList
-        data={barbers}
-        renderItem={({ item }) => <BarberListItem barber={item} />}
-        keyExtractor={(item) => item.id.toString()}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.barbersList}
-      />
-    </ScrollView>
+          <View style={serviceStyles.serviceBox}>
+            <Image source={require('../../img/bearddye.jpg')} style={serviceStyles.serviceImage} />
+            <Text style={serviceStyles.serviceTitle}>Beard coloring</Text>
+          </View>
+          <View style={serviceStyles.serviceBox}>
+            <Image source={require('../../img/dye.jpg')} style={serviceStyles.serviceImage} />
+            <Text style={serviceStyles.serviceTitle}>Hair dye</Text>
+          </View>
+          <View style={serviceStyles.serviceBox}>
+            <Image source={require('../../img/haircut.jpg')} style={serviceStyles.serviceImage} />
+            <Text style={serviceStyles.serviceTitle}>Haircut</Text>
+          </View>
+        </View>
+        <Text style={mainStyles.sectionTitle}>Barbers</Text>
+        <View style={mainStyles.barbersList}>
+          {barbers.map((barber) => (
+            <BarberListItem key={barber.id} barber={barber} />
+          ))}
+        </View>
+        <Text style={mainStyles.sectionTitle}>Our Products</Text>
+        <View style={serviceStyles.servicesContainer}>
+          <View style={serviceStyles.serviceBox}>
+            <Image source={require('../../img/product.jpg')} style={serviceStyles.serviceImage} />
+            <Text style={serviceStyles.serviceTitle}>Hair paste</Text>
+          </View>
+          <View style={serviceStyles.serviceBox}>
+            <Image source={require('../../img/product.jpg')} style={serviceStyles.serviceImage} />
+            <Text style={serviceStyles.serviceTitle}>Hair powder</Text>
+          </View>
+          <View style={serviceStyles.serviceBox}>
+            <Image source={require('../../img/product.jpg')} style={serviceStyles.serviceImage} />
+            <Text style={serviceStyles.serviceTitle}>Beard gel</Text>
+          </View>
+          <View style={serviceStyles.serviceBox}>
+            <Image source={require('../../img/product.jpg')} style={serviceStyles.serviceImage} />
+            <Text style={serviceStyles.serviceTitle}>Beard paste</Text>
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
+const mainStyles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFF',
-    paddingHorizontal: 15,
-  },
-  sectionContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    paddingHorizontal: 20,
   },
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    marginVertical: 15,
+    marginVertical: 10,
+    color: '#121212',
   },
-  servicesList: {
-    marginBottom: 20,
-    paddingHorizontal: 25,
+  name: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+    color: '#121212',
+  },
+  info: {
+    fontSize: 14,
+  },
+  image: {
+    width: 70,
+    height: 70,
+    borderRadius: 40,
+    marginRight: 20,
+  },
+  textContainer: {
+    flex: 1,
+  },
+  row: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   barbersList: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
-  serviceItem: {
-    marginHorizontal: -1, // space between service elements
+});
+
+const serviceStyles = StyleSheet.create({
+  servicesContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap', // Ensures that items wrap to the next line if needed
   },
+  serviceBox: {
+    width: '23%',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  serviceImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+  serviceTitle: {
+    fontSize: 14,
+    textAlign: 'center',
+  }
 });

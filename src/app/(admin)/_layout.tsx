@@ -31,6 +31,13 @@ export default function TabLayout() {
         headerShown: useClientOnlyValue(false, true),
       }}>
 
+      {/* This is for hiding a tab bar icon */}
+      <Tabs.Screen name="index" options={{ href: null }} />
+      <Tabs.Screen name="createNews" options={{ href: null }} />
+      <Tabs.Screen name="createProduct" options={{ href: null }} />
+      <Tabs.Screen name="createService" options={{ href: null }} />
+      <Tabs.Screen name="addBarber" options={{ href: null }} />
+
       <Tabs.Screen
         name="news"
         options={{
@@ -52,9 +59,26 @@ export default function TabLayout() {
         }}
       />
 
-      {/* This is for hiding a tab bar icon */}
-      <Tabs.Screen name="index" options={{ href: null }} />
-      <Tabs.Screen name="createNews" options={{ href: null}} />
+      <Tabs.Screen
+        name="barbers"
+        options={{
+          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
+          title: 'Barbers', headerRight: () => (
+            <Link href="/(admin)/addBarber" asChild>
+              <Pressable>
+                {({ pressed }) => (
+                  <FontAwesome
+                    name="plus-square-o"
+                    size={25}
+                    color={Colors.light.tint}
+                    style={{ marginRight: 15, opacity: pressed ? 0.6 : 2 }}
+                  />
+                )}
+              </Pressable>
+            </Link>
+          )
+        }}
+      />
 
       <Tabs.Screen
         name="menu"
@@ -66,10 +90,44 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="panel"
+        name="services"
         options={{
-          title: 'Panel',
-          tabBarIcon: ({ color }) => <TabBarIcon name="list" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="scissors" color={color} />,
+          title: 'Services', headerRight: () => (
+            <Link href="/(admin)/createService" asChild>
+              <Pressable>
+                {({ pressed }) => (
+                  <FontAwesome
+                    name="plus-square-o"
+                    size={25}
+                    color={Colors.light.tint}
+                    style={{ marginRight: 15, opacity: pressed ? 0.6 : 2 }}
+                  />
+                )}
+              </Pressable>
+            </Link>
+          )
+        }}
+      />
+
+      <Tabs.Screen
+        name="products"
+        options={{
+          tabBarIcon: ({ color }) => <TabBarIcon name="shopping-cart" color={color} />,
+          title: 'Products', headerRight: () => (
+            <Link href="/(admin)/createProduct" asChild>
+              <Pressable>
+                {({ pressed }) => (
+                  <FontAwesome
+                    name="plus-square-o"
+                    size={25}
+                    color={Colors.light.tint}
+                    style={{ marginRight: 15, opacity: pressed ? 0.6 : 2 }}
+                  />
+                )}
+              </Pressable>
+            </Link>
+          )
         }}
       />
     </Tabs>

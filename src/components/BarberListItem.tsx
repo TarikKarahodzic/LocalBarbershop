@@ -1,8 +1,7 @@
 import { Text, View, StyleSheet, Image, Pressable } from 'react-native';
 import { Barber } from '../types';
 import { Link, useSegments } from 'expo-router';
-import { FontAwesome } from '@expo/vector-icons';
-import Colors from '../constants/Colors';
+import { Entypo } from '@expo/vector-icons';
 
 export const defaultBarberImage =
   'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png';
@@ -17,19 +16,25 @@ const BarberListItem = ({ barber }: BarberListItemProps) => {
   return (
     <Link href={`/${segments[0]}/menu/${barber.id}`} asChild>
       <Pressable style={mainStyles.container}>
-        <Image
-          source={{ uri: barber.image || defaultBarberImage }}
-          style={mainStyles.image}
-        />
-        <View style={mainStyles.textContainer}>
-          <Text style={mainStyles.name}>{barber.name}</Text>
-          <View style={barberStyles.additionalInfo}>
-            <View style={barberStyles.infoContainer}>
-              <Text style={barberStyles.infoText}>{barber.email}</Text>
+        <View style={mainStyles.barberContainer}>
+          <View style={mainStyles.imageContainer}>
+            <Image
+              source={{ uri: barber.image || defaultBarberImage }}
+              style={mainStyles.image}
+              resizeMode='cover'
+            />
+          </View>
+          <View style={mainStyles.textContainer}>
+            <Text style={mainStyles.name}>{barber.name}</Text>
+            <View style={mainStyles.additionalInfo}>
+              <View style={mainStyles.infoContainer}>
+                <Entypo name="phone" size={16} color="#888" style={mainStyles.icon} />
+                <Text style={mainStyles.infoText}>{barber.phoneNumber}</Text>
+              </View>
             </View>
-            <View style={barberStyles.infoContainer}>
-              <FontAwesome name="star" size={16} color="#FFD700" style={barberStyles.icon} />
-              <Text style={mainStyles.info}>4.2</Text>
+            <View style={mainStyles.infoContainer}>
+              <Entypo name="email" size={16} color="#888" style={mainStyles.icon} />
+              <Text style={mainStyles.infoText}>{barber.email}</Text>
             </View>
           </View>
         </View>
@@ -42,34 +47,38 @@ export default BarberListItem;
 
 const mainStyles = StyleSheet.create({
   container: {
-    flexDirection: 'row', // Align items horizontally
-    alignItems: 'center', // Center items vertically
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#FFF',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
   },
   name: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 5,
     color: '#121212',
   },
   info: {
     fontSize: 14,
     color: '#121212',
   },
+  imageContainer: {
+    width: '20%',
+    aspectRatio: 1,
+    overflow: 'hidden',
+  },
   image: {
-    width: 70,
-    height: 70,
+    width: '90%',
+    height: '90%',
     borderRadius: 40,
-    marginRight: 20, // Add space between the image and the text
+    marginRight: 20,
   },
   textContainer: {
-    flex: 1, // Take up the remaining space
+    flex: 1,
   },
-});
-
-const barberStyles = StyleSheet.create({
+  barberContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
   additionalInfo: {
     flexDirection: 'row',
     alignItems: 'center',
