@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Text, View, StyleSheet, TextInput, Image } from "react-native";
+import { Text, View, StyleSheet, TextInput, Image, Alert } from "react-native";
 
 import { defaultBarberImage } from "@/src/components/BarberListItem";
 import Button from "@/src/components/Button";
@@ -44,7 +44,7 @@ const CreateBarberScreen = () => {
     };
 
     const onSubmit = () => {
-        if(isUpdating) {
+        if (isUpdating) {
             onUpdate();
         } else {
             onCreate();
@@ -88,6 +88,23 @@ const CreateBarberScreen = () => {
         }
     };
 
+    const onDelete = () => {
+        console.warn("DELETE!");
+    };
+
+    const confirmDelete = () => {
+        Alert.alert("Confirm", "Are you sure you want to delete this barber?", [
+            {
+                text: 'Cancel',
+            },
+            {
+                text: "Delete",
+                style: "destructive",
+                onPress: onDelete,
+            }
+        ]);
+    };
+
     return (
         <View style={styles.container}>
             <Stack.Screen options={{
@@ -122,6 +139,11 @@ const CreateBarberScreen = () => {
             />
             <Text style={{ color: 'red' }}>{errors}</Text>
             <Button onPress={onSubmit} text={isUpdating ? "Update" : "Create"}></Button>
+            {isUpdating && (
+                <Text onPress={confirmDelete} style={styles.textButton}>
+                    Delete
+                </Text>
+            )}
         </View>
     );
 };
