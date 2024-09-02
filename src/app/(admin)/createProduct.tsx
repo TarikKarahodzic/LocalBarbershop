@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Text, View, StyleSheet, TextInput, Image } from "react-native";
+import { Text, View, StyleSheet, TextInput, Image, Alert } from "react-native";
 
 import { defaultProductImage } from "@/src/components/ProductListItem";
 import Button from "@/src/components/Button";
