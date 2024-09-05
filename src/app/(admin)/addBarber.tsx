@@ -7,6 +7,7 @@ import Colors from "@/src/constants/Colors";
 
 import * as ImagePicker from 'expo-image-picker';
 import { Stack, useLocalSearchParams } from "expo-router";
+import { useInsertProduct } from "@/src/api/services";
 
 const CreateBarberScreen = () => {
     const [name, setName] = useState('');
@@ -18,6 +19,8 @@ const CreateBarberScreen = () => {
 
     const { id } = useLocalSearchParams();
     const isUpdating = !!id;
+
+    // const { mutate: insertBarber } = useInsertBarber();
 
     const resetFields = () => {
         setName('');

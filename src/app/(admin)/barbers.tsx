@@ -1,9 +1,19 @@
-import barbers from '@/assets/data/barbers';
-import BarberListItem from '@/src/components/BarberListItem';
 import React from 'react';
-import { FlatList, View } from 'react-native';
+import { ActivityIndicator, FlatList, View, Text } from 'react-native';
+import { useBarberList } from '@/src/api/services';
+import BarberListItem from '@/src/components/BarberListItem';
 
-export default function NewsScreen() {
+export default function BarberScreen() {
+    const { data: barbers, error, isLoading } = useBarberList();
+
+    if (isLoading) {
+        return <ActivityIndicator />;
+    }
+
+    if (error) {
+        return <Text>Failed to fetch services</Text>;
+    }
+
     return (
         <View>
             <FlatList

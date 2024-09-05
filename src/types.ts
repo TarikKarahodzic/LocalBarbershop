@@ -1,7 +1,7 @@
 export type Barber = {
   id: number;
   image: string | null;
-  name: string;
+  fullName: string;
   email: string;
   phoneNumber: string;
 };
@@ -23,8 +23,8 @@ export type Product = {
 export type News = {
   id: number,
   title: string,
-  description: string,
-  timestamp: string,
+  desc: string,
+  created_at: string,
 }
 
 // export const OrderStatusList: OrderStatus[] = [

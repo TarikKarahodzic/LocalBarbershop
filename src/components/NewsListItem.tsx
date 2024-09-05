@@ -10,8 +10,8 @@ const NewsListItem = ({ news }: NewsListItemProps) => {
         <View style={styles.newsItemContainer}>
             <View style={styles.textContainer}>
                 <Text style={styles.newsTitle}>{news.title}</Text>
-                <Text style={styles.newsDescription}>{news.description}</Text>
-                <Text style={styles.newsTimestamp}>{news.timestamp}</Text>
+                <Text style={styles.newsDescription}>{news.desc}</Text>
+                <Text style={styles.newsTimestamp}>{news.created_at}</Text>
             </View>
         </View>
     );

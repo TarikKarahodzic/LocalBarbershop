@@ -1,9 +1,20 @@
-import { Text, View, StyleSheet, Image, ScrollView, SafeAreaView } from 'react-native';
+import { Text, View, StyleSheet, Image, ScrollView, SafeAreaView, ActivityIndicator } from 'react-native';
 
 import barbers from '@/assets/data/barbers';
 import BarberListItem from '@/src/components/BarberListItem';
+import { useBarberList } from '@/src/api/services';
 
 export default function TabOneScreen() {
+  const { data: barbers, error, isLoading } = useBarberList();
+
+  if (isLoading) {
+    return <ActivityIndicator />;
+  }
+
+  if (error) {
+    return <Text>Failed to fetch services</Text>;
+  }
+
   return (
     <SafeAreaView style={mainStyles.container}>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -28,9 +39,13 @@ export default function TabOneScreen() {
         </View>
         <Text style={mainStyles.sectionTitle}>Barbers</Text>
         <View style={mainStyles.barbersList}>
-          {barbers.map((barber) => (
-            <BarberListItem key={barber.id} barber={barber} />
-          ))}
+          {barbers?.length ? (
+            barbers.map((barber) => (
+              <BarberListItem key={barber.id} barber={barber} />
+            ))
+          ) : (
+            <Text>No barbers available</Text>
+          )}
         </View>
         <Text style={mainStyles.sectionTitle}>Our Products</Text>
         <View style={serviceStyles.servicesContainer}>

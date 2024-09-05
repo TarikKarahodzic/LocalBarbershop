@@ -1,15 +1,14 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
-import barbers from '@/assets/data/barbers';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { useState } from 'react';
+import { useBarber } from '@/src/api/services';
 
 const BookingScreen = () => {
-    const { id } = useLocalSearchParams();
-    const barber = barbers.find((p) => p.id.toString() === id)
+    const { id: idString } = useLocalSearchParams();
+    const id = parseFloat(typeof idString === 'string' ? idString : idString[0]);
 
-    if (!barber) {
-        return <Text>Barber not found</Text>
-    }
+    // const { data: service, error, isLoading } = useService(id);
+    const { data: barber, error, isLoading } = useBarber(id);
 
     const [selectedDate, setSelectedDate] = useState(getNextSevenDays()[0]);
     const [selectedTime, setSelectedTime] = useState('11:30Am');
@@ -23,9 +22,17 @@ const BookingScreen = () => {
     ];
     const services = ['Hair cut', 'Head massage', 'Facial', 'Beard'];
 
+    if(isLoading) {
+        return <ActivityIndicator />;
+    }
+
+    if(error) {
+        return <Text>Failed to fetch barbers</Text>;
+    }
+
     return (
         <ScrollView style={styles.container}>
-            <Stack.Screen options={{ title: barber?.name }} />
+            <Stack.Screen options={{ title: barber?.fullName }} />
             <Text style={styles.title}>Book Appointment</Text>
             <Text style={styles.date}>{selectedDate.toDateString()}</Text>
             <View style={styles.dateContainer}>

@@ -1,16 +1,21 @@
 import { Link, Stack, useLocalSearchParams } from 'expo-router';
-import { View, Text, Image, StyleSheet, Pressable } from 'react-native';
-import barbers from '@/assets/data/barbers';
+import { View, Text, Image, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
 import { defaultBarberImage } from '@/src/components/BarberListItem';
 import { FontAwesome } from '@expo/vector-icons';
 import Colors from '@/src/constants/Colors';
+import { useBarber } from '@/src/api/services';
 
 const BarberDetailsScreen = () => {
-    const { id } = useLocalSearchParams();
-    const barber = barbers.find((p) => p.id.toString() === id);
+    const { id: idString } = useLocalSearchParams();
+    const id = parseFloat(typeof idString === 'string' ? idString : idString[0]);
+    const { data: barber, error, isLoading } = useBarber(id);
 
-    if (!barber) {
-        return <Text>Barber not found</Text>
+    if (isLoading) {
+        return <ActivityIndicator />;
+    }
+
+    if (error) {
+        return <Text>Failed to fetch barbers</Text>;
     }
 
     return (
@@ -40,7 +45,7 @@ const BarberDetailsScreen = () => {
                 style={styles.image}
             />
 
-            <Text style={styles.title}>{barber.name}</Text>
+            <Text style={styles.title}>{barber.fullName}</Text>
             <Text style={styles.info}>{barber.email}</Text>
             <Text style={styles.info}>{barber.phoneNumber}</Text>
         </View>
