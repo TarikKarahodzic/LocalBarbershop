@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Text, View, StyleSheet, TextInput, Image, Alert } from "react-native";
 
 import { defaultBarberImage } from "@/src/components/BarberListItem";
@@ -6,8 +6,8 @@ import Button from "@/src/components/Button";
 import Colors from "@/src/constants/Colors";
 
 import * as ImagePicker from 'expo-image-picker';
-import { Stack, useLocalSearchParams } from "expo-router";
-import { useInsertProduct } from "@/src/api/services";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { useBarber, useDeleteBarber, useInsertBarber, useUpdateBarber } from "@/src/api/services";
 
 const CreateBarberScreen = () => {
     const [name, setName] = useState('');
@@ -17,10 +17,26 @@ const CreateBarberScreen = () => {
     const [errors, setErrors] = useState('');
     const [image, setImage] = useState<string | null>(null);
 
-    const { id } = useLocalSearchParams();
+    const { id: idString } = useLocalSearchParams();
+    const id = parseFloat(typeof idString === 'string' ? idString : idString?.[0]);
+
     const isUpdating = !!id;
 
-    // const { mutate: insertBarber } = useInsertBarber();
+    const { mutate: insertBarber } = useInsertBarber();
+    const { mutate: updateBarber } = useUpdateBarber();
+    const { mutate: deleteBarber } = useDeleteBarber();
+    const { data: updatingBarber } = useBarber(id);
+
+    const router = useRouter();
+
+    useEffect(() => {
+        if (updatingBarber) {
+            setName(updatingBarber.name);
+            setEmail(updatingBarber.email);
+            setPhoneNumber(updatingBarber.phoneNumber.toString());
+            setImage(updatingBarber.image);
+        }
+    }, [updatingBarber]);
 
     const resetFields = () => {
         setName('');
@@ -59,11 +75,12 @@ const CreateBarberScreen = () => {
             return;
         }
 
-        console.warn('Adding barber: ', name);
-
-        // Save in database
-
-        resetFields();
+        insertBarber({ name, image, email, phoneNumber }, {
+            onSuccess: () => {
+                resetFields();
+                router.back();
+            }
+        });
     };
 
     const onUpdate = () => {
@@ -71,28 +88,23 @@ const CreateBarberScreen = () => {
             return;
         }
 
-        console.warn('Updating barber: ');
-
-        // Save in database
-
-        resetFields();
-    };
-
-    const pickImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-        });
-
-        if (!result.canceled) {
-            setImage(result.assets[0].uri);
-        }
+        updateBarber({ id, name, image, email, phoneNumber },
+            {
+                onSuccess: () => {
+                    resetFields();
+                    router.back();
+                },
+            }
+        );
     };
 
     const onDelete = () => {
-        console.warn("DELETE!");
+        deleteBarber(id, {
+            onSuccess: () => {
+                resetFields();
+                router.replace('/(admin)');
+            },
+        });
     };
 
     const confirmDelete = () => {
@@ -106,6 +118,19 @@ const CreateBarberScreen = () => {
                 onPress: onDelete,
             }
         ]);
+    };
+
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            setImage(result.assets[0].uri);
+        }
     };
 
     return (

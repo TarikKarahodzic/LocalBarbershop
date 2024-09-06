@@ -48,20 +48,8 @@ export default function TabLayout() {
         name="news"
         options={{
           tabBarIcon: ({ color }) => <TabBarIcon name="newspaper-o" color={color} />,
-          title: 'News', headerRight: () => (
-            <Link href="/(admin)/createNews" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="plus-square-o"
-                    size={25}
-                    color={Colors.light.tint}
-                    style={{ marginRight: 15, opacity: pressed ? 0.6 : 2 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          )
+          title: 'News',
+          headerShown: false,
         }}
       />
 
@@ -99,20 +87,8 @@ export default function TabLayout() {
         name="services"
         options={{
           tabBarIcon: ({ color }) => <TabBarIcon name="scissors" color={color} />,
-          title: 'Services', headerRight: () => (
-            <Link href="/(admin)/createService" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="plus-square-o"
-                    size={25}
-                    color={Colors.light.tint}
-                    style={{ marginRight: 15, opacity: pressed ? 0.6 : 2 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          )
+          title: 'Services',
+          headerShown: false,
         }}
       />
 
@@ -120,20 +96,8 @@ export default function TabLayout() {
         name="products"
         options={{
           tabBarIcon: ({ color }) => <TabBarIcon name="shopping-cart" color={color} />,
-          title: 'Products', headerRight: () => (
-            <Link href="/(admin)/createProduct" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="plus-square-o"
-                    size={25}
-                    color={Colors.light.tint}
-                    style={{ marginRight: 15, opacity: pressed ? 0.6 : 2 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          )
+          title: 'Products',
+          headerShown: false,
         }}
       />
     </Tabs>

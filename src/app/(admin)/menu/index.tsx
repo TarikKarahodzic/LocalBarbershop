@@ -1,6 +1,5 @@
 import { Text, View, StyleSheet, Image, ScrollView, SafeAreaView, ActivityIndicator } from 'react-native';
 
-import barbers from '@/assets/data/barbers';
 import BarberListItem from '@/src/components/BarberListItem';
 import { useBarberList } from '@/src/api/services';
 

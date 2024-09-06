@@ -1,6 +1,7 @@
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
 import { Product } from '../types';
 import Colors from '../constants/Colors';
+import { Link, useSegments } from 'expo-router';
 
 export const defaultProductImage =
     'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png';
@@ -10,18 +11,21 @@ type ProductListItemProps = {
 }
 
 const ProductListItem = ({ product }: ProductListItemProps) => {
+    const segments = useSegments();
 
     return (
-        <View style={styles.container}>
-            <Image 
-                source={{ uri: product.image || defaultProductImage }} 
-                style={styles.image}
-                resizeMode='contain'
-            />
+        <Link href={`/${segments[0]}/products/${product.id}`} asChild>
+            <Pressable style={styles.container}>
+                <Image
+                    source={{ uri: product.image || defaultProductImage }}
+                    style={styles.image}
+                    resizeMode='contain'
+                />
 
-            <Text style={styles.title}>{product.name}</Text>
-            <Text style={styles.price}>${product.price}</Text>
-        </View>
+                <Text style={styles.title}>{product.name}</Text>
+                <Text style={styles.price}>${product.price}</Text>
+            </Pressable>
+        </Link>
     );
 };
 
@@ -42,7 +46,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 18,
         fontWeight: '600',
-        marginVertical: 10,
+        marginVertical: 5,
     },
     price: {
         color: Colors.light.tint,

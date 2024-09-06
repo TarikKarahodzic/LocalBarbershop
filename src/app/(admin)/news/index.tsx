@@ -12,7 +12,7 @@ export default function NewsScreen() {
     }
 
     if (error) {
-        return <Text>Failed to fetch services</Text>;
+        return <Text>Failed to fetch news</Text>;
     }
 
     return (

@@ -25,7 +25,7 @@ const BarberListItem = ({ barber }: BarberListItemProps) => {
             />
           </View>
           <View style={mainStyles.textContainer}>
-            <Text style={mainStyles.name}>{barber.fullName}</Text>
+            <Text style={mainStyles.name}>{barber.name}</Text>
             <View style={mainStyles.additionalInfo}>
               <View style={mainStyles.infoContainer}>
                 <Entypo name="phone" size={16} color="#888" style={mainStyles.icon} />

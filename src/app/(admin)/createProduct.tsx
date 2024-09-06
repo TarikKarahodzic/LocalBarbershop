@@ -6,7 +6,7 @@ import Button from "@/src/components/Button";
 import Colors from "@/src/constants/Colors";
 
 import * as ImagePicker from 'expo-image-picker';
-import { Stack, useLocalSearchParams, useNavigation, useRouter } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useDeleteProduct, useInsertProduct, useProduct, useUpdateProduct } from "@/src/api/services";
 
 const CreateProductScreen = () => {
@@ -16,10 +16,9 @@ const CreateProductScreen = () => {
     const [errors, setErrors] = useState('');
     const [image, setImage] = useState<string | null>(null);
 
-    const navigation = useNavigation();
-
     const { id: idString } = useLocalSearchParams();
     const id = parseFloat(typeof idString === 'string' ? idString : idString?.[0]);
+    const isUpdating = !!id;
 
     const { mutate: insertProduct } = useInsertProduct();
     const { mutate: updateProduct } = useUpdateProduct();
@@ -39,6 +38,7 @@ const CreateProductScreen = () => {
     const resetFields = () => {
         setName('');
         setPrice('');
+        return true;
     };
 
     const validateInput = () => {
@@ -54,6 +54,14 @@ const CreateProductScreen = () => {
         return true;
     };
 
+    const onSubmit = () => {
+        if(isUpdating) {
+            onUpdate();
+        } else {
+            onCreate();
+        }
+    }
+
     const onCreate = () => {
         if (!validateInput()) {
             return;
@@ -65,7 +73,7 @@ const CreateProductScreen = () => {
                 router.back();
             }
         });
-
+        
         resetFields();
     };
 
@@ -121,7 +129,7 @@ const CreateProductScreen = () => {
     return (
         <View style={styles.container}>
             <Stack.Screen options={{
-                title: 'Create a product'
+                title: isUpdating ? 'Update a product' : 'Create a product'
             }} />
 
             <Image source={{ uri: image || defaultProductImage }} style={styles.image} />
@@ -144,10 +152,12 @@ const CreateProductScreen = () => {
                 keyboardType="numeric"
             />
             <Text style={{ color: 'red' }}>{errors}</Text>
-            <Button onPress={onCreate} text="Create"></Button>
-            <Text onPress={confirmDelete} style={styles.textButton}>
-                Delete
-            </Text>
+            <Button onPress={onSubmit} text={isUpdating ? "Update" : "Create"}></Button>
+            {isUpdating && (
+                <Text onPress={confirmDelete} style={styles.textButton}>
+                    Delete
+                </Text>
+            )}
         </View>
     );
 };
@@ -184,7 +194,3 @@ const styles = StyleSheet.create({
 });
 
 export default CreateProductScreen;
-
-// ili napraviti novi screen gdje ce se samo vidjeti kod
-// admina, i imat ce podijeljeno Barbers pa add, edit, remove
-// services add, edit, remove i products add, edit, remove

@@ -1,12 +1,13 @@
-import { useState } from "react";
-import { Text, View, StyleSheet, TextInput, Image } from "react-native";
+import { useEffect, useState } from "react";
+import { Text, View, StyleSheet, TextInput, Image, Alert } from "react-native";
 
 import Button from "@/src/components/Button";
 import Colors from "@/src/constants/Colors";
 
 import * as ImagePicker from 'expo-image-picker';
-import { Stack, useNavigation } from "expo-router";
+import { Stack, useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { defaultServiceImage } from "@/src/components/ServiceListItem";
+import { useInsertService, useUpdateService, useDeleteService, useService } from "@/src/api/services";
 
 const CreateServiceScreen = () => {
     const [name, setName] = useState('');
@@ -17,9 +18,29 @@ const CreateServiceScreen = () => {
 
     const navigation = useNavigation();
 
+    const { id: idString } = useLocalSearchParams();
+    const id = parseFloat(typeof idString === 'string' ? idString : idString?.[0]);
+    const isUpdating = !!id;
+
+    const { mutate: insertService } = useInsertService();
+    const { mutate: updateService } = useUpdateService();
+    const { mutate: deleteService } = useDeleteService();
+    const { data: updatingService } = useService(id);
+
+    const router = useRouter();
+
+    useEffect(() => {
+        if (updatingService) {
+            setName(updatingService.name);
+            setPrice(updatingService.price.toString());
+            setImage(updatingService.image);
+        }
+    }, [updatingService]);
+
     const resetFields = () => {
         setName('');
         setPrice('');
+        return true;
     };
 
     const validateInput = () => {
@@ -35,16 +56,65 @@ const CreateServiceScreen = () => {
         return true;
     };
 
+    const onSubmit = () => {
+        if (isUpdating) {
+            onUpdate();
+        } else {
+            onCreate();
+        }
+    }
+
     const onCreate = () => {
         if (!validateInput()) {
             return;
         }
 
-        console.warn('Adding barber: ', name);
-
-        // Save in database
+        insertService({ name, price: parseFloat(price), image },
+            {
+                onSuccess: () => {
+                    resetFields();
+                    router.back();
+                }
+            });
 
         resetFields();
+    };
+
+    const onUpdate = () => {
+        if (!validateInput()) {
+            return;
+        }
+
+        updateService({ id, name, price },
+            {
+                onSuccess: () => {
+                    resetFields();
+                    router.back();
+                },
+            }
+        );
+    };
+
+    const onDelete = () => {
+        deleteService(id, {
+            onSuccess: () => {
+                resetFields();
+                router.back();
+            }
+        });
+    };
+
+    const confirmDelete = () => {
+        Alert.alert("Confirm", "Are you sure you want to delete this barber?", [
+            {
+                text: 'Cancel',
+            },
+            {
+                text: "Delete",
+                style: "destructive",
+                onPress: onDelete,
+            }
+        ]);
     };
 
     const pickImage = async () => {
@@ -63,7 +133,7 @@ const CreateServiceScreen = () => {
     return (
         <View style={styles.container}>
             <Stack.Screen options={{
-                title: 'Create a service'
+                title: isUpdating ? 'Update a service' : 'Create a service'
             }} />
 
             <Image source={{ uri: image || defaultServiceImage }} style={styles.image} />
@@ -86,8 +156,12 @@ const CreateServiceScreen = () => {
                 keyboardType="numeric"
             />
             <Text style={{ color: 'red' }}>{errors}</Text>
-            <Button onPress={onCreate} text="Create"></Button>
-            <Button onPress={() => navigation.goBack()} text="Back" />
+            <Button onPress={onSubmit} text={isUpdating ? "Update" : "Create"}></Button>
+            {isUpdating && (
+                <Text onPress={confirmDelete} style={styles.textButton}>
+                    Delete
+                </Text>
+            )}
         </View>
     );
 };

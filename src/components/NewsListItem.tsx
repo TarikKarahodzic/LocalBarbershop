@@ -1,19 +1,23 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { News } from '../types';
+import { Link, useSegments } from 'expo-router';
 
 type NewsListItemProps = {
     news: News;
 }
 
 const NewsListItem = ({ news }: NewsListItemProps) => {
+    const segments = useSegments();
     return (
-        <View style={styles.newsItemContainer}>
-            <View style={styles.textContainer}>
-                <Text style={styles.newsTitle}>{news.title}</Text>
-                <Text style={styles.newsDescription}>{news.desc}</Text>
-                <Text style={styles.newsTimestamp}>{news.created_at}</Text>
-            </View>
-        </View>
+        <Link href={`/${segments[0]}/news/${news.id}`} asChild>
+            <Pressable style={styles.newsItemContainer}>
+                <View style={styles.textContainer}>
+                    <Text style={styles.newsTitle}>{news.title}</Text>
+                    <Text style={styles.newsDescription}>{news.desc}</Text>
+                    <Text style={styles.newsTimestamp}>{news.timestamp}</Text>
+                </View>
+            </Pressable>
+        </Link>
     );
 };
 

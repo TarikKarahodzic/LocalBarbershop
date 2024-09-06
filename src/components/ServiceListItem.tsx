@@ -1,6 +1,7 @@
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
 import { Service } from '../types';
 import Colors from '../constants/Colors';
+import { Link, useSegments } from 'expo-router';
 
 export const defaultServiceImage =
     'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png';
@@ -10,17 +11,21 @@ type ServiceListItemProps = {
 }
 
 const ServiceListItem = ({ service }: ServiceListItemProps) => {
-    return (
-        <View style={styles.container}>
-            <Image 
-                source={{ uri: service.image || defaultServiceImage }} 
-                style={styles.image}
-                resizeMode='contain'
-            />
+    const segments = useSegments();
 
-            <Text style={styles.title}>{service.name}</Text>
-            <Text style={styles.price}>${service.price}</Text>
-        </View>
+    return (
+        <Link href={`/${segments[0]}/services/${service.id}`} asChild>
+            <Pressable style={styles.container}>
+                <Image
+                    source={{ uri: service.image || defaultServiceImage }}
+                    style={styles.image}
+                    resizeMode='contain'
+                />
+
+                <Text style={styles.title}>{service.name}</Text>
+                <Text style={styles.price}>${service.price}</Text>
+            </Pressable>
+        </Link>
     );
 };
 
@@ -41,7 +46,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 18,
         fontWeight: '600',
-        marginVertical: 10,
+        marginVertical: 5,
     },
     price: {
         color: Colors.light.tint,

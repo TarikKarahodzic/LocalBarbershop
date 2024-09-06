@@ -1,7 +1,10 @@
 import { supabase } from "@/src/lib/supabase";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-/* --- Services --- */
+/* ---------------------------- */
+/* --------- Services --------- */
+/* ---------------------------- */
+
 export const useServiceList = () => {
     return useQuery({
         queryKey: ['services'],
@@ -32,7 +35,81 @@ export const useService = (id: number) => {
     });
 };
 
-/* --- Barbers --- */
+// Insert a Service
+export const useInsertService = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        async mutationFn(data: any) {
+            const { error, data: newService } = await supabase
+                .from('services')
+                .insert({
+                    name: data.name,
+                    price: data.price,
+                    image: data.image,
+                })
+                .single();
+
+            if (error) {
+                throw new Error(error.message);
+            }
+            return newService;
+        },
+        async onSuccess() {
+            await queryClient.invalidateQueries(['services']);
+        },
+    });
+};
+
+// Update a Service
+export const useUpdateService = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        async mutationFn(data: any) {
+            const { error, data: updatedService } = await supabase
+                .from('services')
+                .update({
+                    name: data.name,
+                    price: data.price,
+                    image: data.image,
+                })
+                .eq('id', data.id)
+                .select();
+
+            if (error) {
+                throw new Error(error.message);
+            }
+            return updatedService;
+        },
+        async onSuccess(_, { id }) {
+            await queryClient.invalidateQueries(['services']);
+            await queryClient.invalidateQueries(['services', id]);
+        },
+    });
+};
+
+// Delete a Service
+export const useDeleteService = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        async mutationFn(id: number) {
+            const { error } = await supabase.from('services').delete().eq('id', id);
+            if (error) {
+                throw new Error(error.message);
+            }
+        },
+        async onSuccess() {
+            await queryClient.invalidateQueries(['services']);
+        }
+    });
+};
+
+/* ---------------------------- */
+/* --------- Barbers ---------- */
+/* ---------------------------- */
+// Printing barbers
 export const useBarberList = () => {
     return useQuery({
         queryKey: ['barbers'],
@@ -46,6 +123,7 @@ export const useBarberList = () => {
     });
 };
 
+// Selecting barbers by id
 export const useBarber = (id: number) => {
     return useQuery({
         queryKey: ['barbers', id],
@@ -63,7 +141,83 @@ export const useBarber = (id: number) => {
     });
 };
 
-/* --- News --- */
+// Insert a barber
+export const useInsertBarber = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        async mutationFn(data: any) {
+            const { error, data: newBarber } = await supabase
+                .from('barbers')
+                .insert({
+                    name: data.name,
+                    image: data.image,
+                    email: data.email,
+                    phoneNumber: data.phoneNumber,
+                })
+                .single();
+
+            if (error) {
+                throw new Error(error.message);
+            }
+            return newBarber;
+        },
+        async onSuccess() {
+            await queryClient.invalidateQueries(['barbers']);
+        },
+    });
+};
+
+// Update a barber
+export const useUpdateBarber = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        async mutationFn(data: any) {
+            const { error, data: updatedBarber } = await supabase
+                .from('barbers')
+                .update({
+                    name: data.name,
+                    image: data.image,
+                    email: data.email,
+                    phoneNumber: data.phoneNumber,
+                })
+                .eq('id', data.id)
+                .select()
+                .single();
+
+            if (error) {
+                throw new Error(error.message);
+            }
+            return updatedBarber;
+        },
+        async onSuccess(_, { id }) {
+            await queryClient.invalidateQueries(['barbers']);
+            await queryClient.invalidateQueries(['barbers', id]);
+        },
+    });
+};
+
+// Delete a barber
+export const useDeleteBarber = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        async mutationFn(id: number) {
+            const { error } = await supabase.from('barbers').delete().eq('id', id);
+            if (error) {
+                throw new Error(error.message);
+            }
+        },
+        async onSuccess() {
+            await queryClient.invalidateQueries(['barbers']);
+        }
+    });
+};
+
+/* ----------------------------- */
+/* ----------- News ------------ */
+/* ----------------------------- */
 export const useNewsList = () => {
     return useQuery({
         queryKey: ['news'],
@@ -96,7 +250,81 @@ export const useNews = (id: number) => {
     });
 };
 
-/* --- Products --- */
+// Create news
+export const useInsertNews = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        async mutationFn(data: any) {
+            const { error, data: newNews } = await supabase
+                .from('news')
+                .insert({
+                    title: data.title,
+                    desc: data.desc,
+                    timestamp: data.timestamp,
+                })
+                .single();
+
+            if (error) {
+                throw new Error(error.message);
+            }
+            return newNews;
+        },
+        async onSuccess() {
+            await queryClient.invalidateQueries(['news']);
+        },
+    });
+};
+
+// Update news
+export const useUpdateNews = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        async mutationFn(data: any) {
+            const { error, data: updatedNews } = await supabase
+                .from('news')
+                .update({
+                    title: data.title,
+                    desc: data.desc,
+                    created_at: data.created_at,
+                })
+                .eq('id', data.id)
+                .select()
+                .single();
+
+            if (error) {
+                throw new Error(error.message);
+            }
+            return updatedNews;
+        },
+        async onSuccess(_, { id }) {
+            await queryClient.invalidateQueries(['news']);
+            await queryClient.invalidateQueries(['news', id]);
+        },
+    });
+};
+
+// Delete news
+export const useDeleteNews = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        async mutationFn(id: number) {
+            const { error } = await supabase.from('news').delete().eq('id', id);
+            if (error) {
+                throw new Error(error.message);
+            }
+        },
+        async onSuccess() {
+            await queryClient.invalidateQueries(['news']);
+        }
+    });
+};
+
+/* ----------------------------- */
+/* --------- Products ---------- */
+/* ----------------------------- */
 export const useProductList = () => {
     return useQuery({
         queryKey: ['products'],
@@ -128,7 +356,7 @@ export const useProduct = (id: number) => {
         },
     });
 };
-// Adding a new product and refreshing the list of products after success
+// Adding a new product
 export const useInsertProduct = () => {
     const queryClient = useQueryClient();
 
@@ -154,6 +382,7 @@ export const useInsertProduct = () => {
     });
 };
 
+// Update a product
 export const useUpdateProduct = () => {
     const queryClient = useQueryClient();
 
@@ -182,6 +411,7 @@ export const useUpdateProduct = () => {
     });
 };
 
+// Delete a product
 export const useDeleteProduct = () => {
     const queryClient = useQueryClient();
 

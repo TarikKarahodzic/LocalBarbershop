@@ -1,9 +1,9 @@
 export type Barber = {
   id: number;
   image: string | null;
-  fullName: string;
+  name: string;
   email: string;
-  phoneNumber: string;
+  phoneNumber: number;
 };
 
 export type Service = {
@@ -24,7 +24,7 @@ export type News = {
   id: number,
   title: string,
   desc: string,
-  created_at: string,
+  timestamp: string,
 }
 
 // export const OrderStatusList: OrderStatus[] = [

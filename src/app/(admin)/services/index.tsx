@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, FlatList, View, Text } from 'react-native';
+import { ActivityIndicator, FlatList, Text } from 'react-native';
 import ServiceListItem from '@/src/components/ServiceListItem';
 import { useServiceList } from '@/src/api/services';
 
@@ -13,16 +13,14 @@ export default function ServiceScreen() {
     if (error) {
         return <Text>Failed to fetch services</Text>;
     }
-    
+
     return (
-        <View>
-            <FlatList
-                data={services}
-                renderItem={({ item }) => <ServiceListItem service={item} />}
-                numColumns={2}
-                contentContainerStyle={{ gap: 10, padding: 10 }}
-                columnWrapperStyle={{ gap: 10 }}
-            />
-        </View>
+        <FlatList
+            data={services}
+            renderItem={({ item }) => <ServiceListItem service={item} />}
+            numColumns={2}
+            contentContainerStyle={{ gap: 10, padding: 10 }}
+            columnWrapperStyle={{ gap: 10 }}
+        />
     );
 };
