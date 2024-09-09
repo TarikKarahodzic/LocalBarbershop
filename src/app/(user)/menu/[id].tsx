@@ -1,18 +1,23 @@
-import { Stack, useLocalSearchParams } from 'expo-router';
+import { router, Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
-import { useState } from 'react';
-import { useBarber } from '@/src/api/services';
+import { useEffect, useState } from 'react';
+import { useBarber, useInsertAppointment, useServiceList } from '@/src/api/services';
+import { supabase } from '@/src/lib/supabase';
 
 const BookingScreen = () => {
     const { id: idString } = useLocalSearchParams();
     const id = parseFloat(typeof idString === 'string' ? idString : idString[0]);
 
-    // const { data: service, error, isLoading } = useService(id);
-    const { data: barber, error, isLoading } = useBarber(id);
+    const { data: barber, error: barberError, isLoading: barberLoading } = useBarber(id);
+    const { data: services, error: serviceError, isLoading: serviceLoading } = useServiceList();
+
+    const { mutate: insertAppointment } = useInsertAppointment();
 
     const [selectedDate, setSelectedDate] = useState(getNextSevenDays()[0]);
-    const [selectedTime, setSelectedTime] = useState('11:30Am');
-    const [selectedService, setSelectedService] = useState('Hair cut');
+    const [selectedTime, setSelectedTime] = useState('11:30');
+    const [selectedServiceIds, setSelectedServiceIds] = useState<number[]>([]);
+    const [currentProfileId, setCurrentProfileId] = useState<string | null>(null);
+    const [selectedBarberId, setSelectedBarberId] = useState(id);
 
     const dates = getNextSevenDays();
     const times = [
@@ -20,20 +25,115 @@ const BookingScreen = () => {
         '11:00', '11:30', '12:00', '12:30', '13:00', '13:30',
         '14:00', '14:30', '15:00', '15:30', '16:00', '16:30'
     ];
-    const services = ['Hair cut', 'Head massage', 'Facial', 'Beard'];
 
-    if(isLoading) {
+    useEffect(() => {
+        const getCurrentUser = async () => {
+            const { data: { session }, error } = await supabase.auth.getSession();
+            if (error) {
+                console.error('Error fetching session:', error);
+                return;
+            }
+            if (session?.user?.id) {
+                setCurrentProfileId(session.user.id);
+            }
+        };
+
+        getCurrentUser();
+    }, []);
+
+    const resetFields = () => {
+        setSelectedDate(getNextSevenDays()[0]);
+        setSelectedTime('08:00');
+        setSelectedServiceIds([]);
+    };
+
+    const getSelectedDateTime = (date: Date, time: string): Date => {
+        const [hours, minutes] = time.split(':').map(Number);
+
+        const combinedDate = new Date(date);
+        combinedDate.setUTCHours(hours, minutes, 0, 0);
+
+        return combinedDate;
+    };
+
+    const handleBookAppointment = async () => {
+        console.log("Selected Barber ID:", selectedBarberId);
+        console.log("Selected Service IDs:", selectedServiceIds);
+        console.log("Profile ID:", currentProfileId);
+        console.log('Selected Time:', selectedTime);
+
+        if (selectedBarberId === null || selectedServiceIds.length === 0 || currentProfileId === null) {
+            console.error('Please select all required fields.');
+            return;
+        }
+
+        try {
+            const selectedDateTimeString = getSelectedDateTime(selectedDate, selectedTime).toISOString();
+
+            const appointmentData = {
+                barberId: selectedBarberId,
+                serviceIds: selectedServiceIds,
+                profileId: currentProfileId,
+                time: selectedDateTimeString,
+            };
+
+            await insertAppointment(appointmentData, {
+                onSuccess: () => {
+                    console.log('Appointment booked successfully!');
+                    resetFields();
+                    router.back();
+                },
+            });
+        } catch (error) {
+            console.error('Error booking appointment:', error);
+        }
+    };
+
+    const handleServicePress = (serviceId: number) => {
+        setSelectedServiceIds(prevSelectedServices => {
+            if (prevSelectedServices.includes(serviceId)) {
+                return prevSelectedServices.filter(service => service !== serviceId);
+            } else {
+                return [...prevSelectedServices, serviceId];
+            }
+        });
+    };
+
+    if (barberLoading || serviceLoading) {
         return <ActivityIndicator />;
     }
 
-    if(error) {
-        return <Text>Failed to fetch barbers</Text>;
+    if (barberError || serviceError) {
+        return <Text>Failed to fetch data</Text>;
     }
 
     return (
         <ScrollView style={styles.container}>
-            <Stack.Screen options={{ title: barber?.fullName }} />
-            <Text style={styles.title}>Book Appointment</Text>
+            <Stack.Screen options={{ title: barber?.name }} />
+            <Text style={styles.serviceTitle}>Choose your services</Text>
+            <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.serviceContainer}
+            >
+                {services?.length ? (
+                    services.map(service => (
+                        <TouchableOpacity
+                            key={service.id}
+                            style={[styles.serviceBox, selectedServiceIds.includes(service.id) && styles.selectedServiceBox]}
+                            onPress={() => handleServicePress(service.id)}
+                        >
+                            <Text style={[styles.serviceText, selectedServiceIds.includes(service.id) && styles.selectedText]}>
+                                {service.name}
+                            </Text>
+                        </TouchableOpacity>
+                    ))
+                ) : (
+                    <Text>No services available</Text>
+                )}
+            </ScrollView>
+
+            <Text style={styles.serviceTitle}>Select a date</Text>
             <Text style={styles.date}>{selectedDate.toDateString()}</Text>
             <View style={styles.dateContainer}>
                 {dates.map((date, index) => (
@@ -48,6 +148,7 @@ const BookingScreen = () => {
                     </TouchableOpacity>
                 ))}
             </View>
+            <Text style={styles.serviceTitle}>Select a time slot</Text>
             <View style={styles.timeContainer}>
                 {times.map((time, index) => (
                     <TouchableOpacity
@@ -59,19 +160,8 @@ const BookingScreen = () => {
                     </TouchableOpacity>
                 ))}
             </View>
-            <Text style={styles.serviceTitle}>Choose your services</Text>
-            <View style={styles.serviceContainer}>
-                {services.map((service, index) => (
-                    <TouchableOpacity
-                        key={index}
-                        style={[styles.serviceBox, selectedService === service && styles.selectedServiceBox]}
-                        onPress={() => setSelectedService(service)}
-                    >
-                        <Text style={[styles.serviceText, selectedService === service && styles.selectedText]}>{service}</Text>
-                    </TouchableOpacity>
-                ))}
-            </View>
-            <TouchableOpacity style={styles.bookButton}>
+
+            <TouchableOpacity style={styles.bookButton} onPress={handleBookAppointment}>
                 <Text style={styles.bookButtonText}>Book Appointment</Text>
             </TouchableOpacity>
         </ScrollView>
@@ -167,13 +257,14 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     serviceBox: {
-        width: '23%',
+        width: 100,
         padding: 10,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 10,
         borderWidth: 1,
         borderColor: '#888',
+        marginRight: 5
     },
     selectedServiceBox: {
         backgroundColor: '#003972',

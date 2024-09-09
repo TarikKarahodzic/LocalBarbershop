@@ -11,6 +11,9 @@ export type Barber = {
   name: string;
   email: string;
   phoneNumber: number;
+  work_start_time: string,
+  work_end_time: string,
+  days_off: string,
 };
 
 export type Service = {
@@ -18,6 +21,7 @@ export type Service = {
   image: string | null;
   name: string;
   price: number;
+  service_time: number;
 };
 
 export type Product = {
@@ -32,6 +36,14 @@ export type News = {
   title: string,
   desc: string,
   timestamp: string,
+};
+
+export type Appointments = {
+  id: number,
+  barber_id: number,
+  service_ids: number[],
+  profiles_id: number,
+  time: string,
 }
 
 // export const OrderStatusList: OrderStatus[] = [

@@ -9,7 +9,9 @@ export const useServiceList = () => {
     return useQuery({
         queryKey: ['services'],
         queryFn: async () => {
-            const { data, error } = await supabase.from('services').select('*')
+            const { data, error } = await supabase
+                .from('services')
+                .select('*')
             if (error) {
                 throw new Error(error.message);
             }
@@ -427,3 +429,68 @@ export const useDeleteProduct = () => {
         }
     });
 };
+
+/* ---------------------------- */
+/* ------- Appointments ------- */
+/* ---------------------------- */
+
+export const useAppointmentList = () => {
+    return useQuery({
+        queryKey: ['appointments'],
+        queryFn: async () => {
+            const { data, error } = await supabase.from('appointments').select('*')
+            if (error) {
+                throw new Error(error.message);
+            }
+            return data;
+        },
+    });
+};
+
+export const useAppointment = (id: number) => {
+    return useQuery({
+        queryKey: ['appointments', id],
+        queryFn: async () => {
+            const { data, error } = await supabase
+                .from('appointments')
+                .select('*')
+                .eq('id', id)
+                .single();
+            if (error) {
+                throw new Error(error.message);
+            }
+            return data;
+        },
+    });
+};
+
+export const useInsertAppointment = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        async mutationFn(data: {
+            barberId: number;
+            serviceIds: number[];
+            profileId: string;
+            time: string;
+        }) {
+            const { error, data: newAppointment } = await supabase
+                .from('appointments')
+                .insert({
+                    barber_id: data.barberId,
+                    service_ids: data.serviceIds,
+                    profiles_id: data.profileId,
+                    time: data.time,
+                })
+                .single();
+
+            if (error) {
+                throw new Error(error.message);
+            }
+            return newAppointment;
+        },
+        async onSuccess() {
+            await queryClient.invalidateQueries(['appointments']);
+        },
+    });
+}
