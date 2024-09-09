@@ -9,6 +9,14 @@ import * as ImagePicker from 'expo-image-picker';
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useDeleteProduct, useInsertProduct, useProduct, useUpdateProduct } from "@/src/api/services";
 
+import * as FileSystem from 'expo-file-system';
+import { v4 as uuidv4 } from 'uuid';
+import { supabase } from "@/src/lib/supabase";
+import { decode } from "base64-arraybuffer";
+
+import 'react-native-get-random-values';
+import RemoteImage from "@/src/components/RemoteImage";
+
 const CreateProductScreen = () => {
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
@@ -38,6 +46,7 @@ const CreateProductScreen = () => {
     const resetFields = () => {
         setName('');
         setPrice('');
+        setImage('');
         return true;
     };
 
@@ -55,25 +64,27 @@ const CreateProductScreen = () => {
     };
 
     const onSubmit = () => {
-        if(isUpdating) {
+        if (isUpdating) {
             onUpdate();
         } else {
             onCreate();
         }
     }
 
-    const onCreate = () => {
+    const onCreate = async () => {
         if (!validateInput()) {
             return;
         }
 
-        insertProduct({ name, price: parseFloat(price), image }, {
+        const imagePath = await uploadImage();
+
+        insertProduct({ name, price: parseFloat(price), image: imagePath }, {
             onSuccess: () => {
                 resetFields();
                 router.back();
             }
         });
-        
+
         resetFields();
     };
 
@@ -126,13 +137,69 @@ const CreateProductScreen = () => {
         }
     };
 
+    // const uploadImage = async () => {
+    //     if (!image?.startsWith('file://')) {
+    //         return;
+    //     }
+
+    //     const base64 = await FileSystem.readAsStringAsync(image, {
+    //         encoding: 'base64',
+    //     });
+    //     const filePath = `${uuidv4()}.png`;
+    //     const contentType = 'image/png';
+    //     const { data, error } = await supabase.storage
+    //         .from('product-images')
+    //         .upload(filePath, decode(base64), { contentType });
+    //     console.log(filePath);
+
+    //     if (error) {
+    //         console.error("Image upload failed: ", error.message);
+    //         return null;
+    //     }
+
+    //     if (data) {
+    //         const imageUrl = `${supabase.storage.from('product-images').getPublicUrl(data.path).publicUrl}`;
+    //         return imageUrl;
+    //     }
+    // };
+
+    const uploadImage = async () => {
+        if (!image?.startsWith('file://')) {
+            return;
+        }
+
+        const base64 = await FileSystem.readAsStringAsync(image, {
+            encoding: 'base64',
+        });
+        const filePath = `${uuidv4()}.png`;
+        const contentType = 'image/png';
+
+        const { data, error } = await supabase.storage
+            .from('product-images')
+            .upload(filePath, decode(base64), { contentType });
+
+        if (error) {
+            console.error("Image upload failed: ", error.message);
+            return null;
+        }
+
+        // Return the path of the uploaded image in Supabase storage
+        return filePath;
+    };
+
+
+
     return (
         <View style={styles.container}>
             <Stack.Screen options={{
                 title: isUpdating ? 'Update a product' : 'Create a product'
             }} />
 
-            <Image source={{ uri: image || defaultProductImage }} style={styles.image} />
+            <RemoteImage
+                path={image}
+                fallback={defaultProductImage}
+                style={styles.image}
+            />
             <Text onPress={pickImage} style={styles.textButton}>Select image</Text>
 
             <Text style={styles.label}>Name</Text>

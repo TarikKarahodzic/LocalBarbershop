@@ -1,5 +1,5 @@
 import { Text, View, StyleSheet, Image, Pressable } from 'react-native';
-import { Barber } from '../types';
+import { Tables } from '../types';
 import { Link, useSegments } from 'expo-router';
 import { Entypo } from '@expo/vector-icons';
 
@@ -7,7 +7,7 @@ export const defaultBarberImage =
   'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png';
 
 type BarberListItemProps = {
-  barber: Barber;
+  barber: Tables<'barbers'>;
 }
 
 const BarberListItem = ({ barber }: BarberListItemProps) => {

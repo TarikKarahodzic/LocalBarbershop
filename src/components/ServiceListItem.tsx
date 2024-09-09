@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
-import { Service } from '../types';
+import { Text, StyleSheet, Image, Pressable } from 'react-native';
+import { Tables } from '../types';
 import Colors from '../constants/Colors';
 import { Link, useSegments } from 'expo-router';
 
@@ -7,7 +7,7 @@ export const defaultServiceImage =
     'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png';
 
 type ServiceListItemProps = {
-    service: Service;
+    service: Tables<'services'>;
 }
 
 const ServiceListItem = ({ service }: ServiceListItemProps) => {
@@ -23,7 +23,7 @@ const ServiceListItem = ({ service }: ServiceListItemProps) => {
                 />
 
                 <Text style={styles.title}>{service.name}</Text>
-                <Text style={styles.price}>${service.price}</Text>
+                <Text style={styles.price}>{service.price} KM</Text>
             </Pressable>
         </Link>
     );

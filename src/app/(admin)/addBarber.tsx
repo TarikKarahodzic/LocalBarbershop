@@ -8,6 +8,14 @@ import Colors from "@/src/constants/Colors";
 import * as ImagePicker from 'expo-image-picker';
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useBarber, useDeleteBarber, useInsertBarber, useUpdateBarber } from "@/src/api/services";
+import { supabase } from "@/src/lib/supabase";
+
+import * as FileSystem from 'expo-file-system';
+import { v4 as uuidv4 } from 'uuid';
+import { decode } from "base64-arraybuffer";
+
+import 'react-native-get-random-values';
+import RemoteImage from "@/src/components/RemoteImage";
 
 const CreateBarberScreen = () => {
     const [name, setName] = useState('');
@@ -70,10 +78,11 @@ const CreateBarberScreen = () => {
         }
     };
 
-    const onCreate = () => {
+    const onCreate = async () => {
         if (!validateInput()) {
             return;
         }
+
 
         insertBarber({ name, image, email, phoneNumber }, {
             onSuccess: () => {
@@ -139,7 +148,11 @@ const CreateBarberScreen = () => {
                 title: isUpdating ? 'Update barber' : 'Add Barber'
             }} />
 
-            <Image source={{ uri: image || defaultBarberImage }} style={styles.image} />
+            <RemoteImage
+                path={image}
+                fallback={defaultBarberImage}
+                style={styles.image} 
+            />
             <Text onPress={pickImage} style={styles.textButton}>Select image</Text>
 
             <Text style={styles.label}>Full name</Text>
@@ -208,7 +221,3 @@ const styles = StyleSheet.create({
 });
 
 export default CreateBarberScreen;
-
-// ili napraviti novi screen gdje ce se samo vidjeti kod
-// admina, i imat ce podijeljeno Barbers pa add, edit, remove
-// services add, edit, remove i products add, edit, remove

@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet, Pressable } from 'react-native';
-import { News } from '../types';
+import { Tables } from '../types';
 import { Link, useSegments } from 'expo-router';
 
 type NewsListItemProps = {
-    news: News;
+    news: Tables<'news'>;
 }
 
 const NewsListItem = ({ news }: NewsListItemProps) => {

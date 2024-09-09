@@ -8,6 +8,14 @@ import * as ImagePicker from 'expo-image-picker';
 import { Stack, useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { defaultServiceImage } from "@/src/components/ServiceListItem";
 import { useInsertService, useUpdateService, useDeleteService, useService } from "@/src/api/services";
+import { supabase } from "@/src/lib/supabase";
+
+import * as FileSystem from 'expo-file-system';
+import { v4 as uuidv4 } from 'uuid';
+import { decode } from "base64-arraybuffer";
+
+import 'react-native-get-random-values';
+import RemoteImage from "@/src/components/RemoteImage";
 
 const CreateServiceScreen = () => {
     const [name, setName] = useState('');
@@ -64,10 +72,11 @@ const CreateServiceScreen = () => {
         }
     }
 
-    const onCreate = () => {
+    const onCreate = async () => {
         if (!validateInput()) {
             return;
         }
+
 
         insertService({ name, price: parseFloat(price), image },
             {
@@ -130,13 +139,19 @@ const CreateServiceScreen = () => {
         }
     };
 
+
+
     return (
         <View style={styles.container}>
             <Stack.Screen options={{
                 title: isUpdating ? 'Update a service' : 'Create a service'
             }} />
 
-            <Image source={{ uri: image || defaultServiceImage }} style={styles.image} />
+            <RemoteImage
+                path={image}
+                fallback={defaultServiceImage}
+                style={styles.image}
+            />
             <Text onPress={pickImage} style={styles.textButton}>Select image</Text>
 
             <Text style={styles.label}>Name</Text>
@@ -198,7 +213,3 @@ const styles = StyleSheet.create({
 });
 
 export default CreateServiceScreen;
-
-// ili napraviti novi screen gdje ce se samo vidjeti kod
-// admina, i imat ce podijeljeno Barbers pa add, edit, remove
-// services add, edit, remove i products add, edit, remove

@@ -1,14 +1,18 @@
 import { Link, Stack, useLocalSearchParams } from 'expo-router';
 import { View, Text, Image, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
-import { defaultBarberImage } from '@/src/components/BarberListItem';
 import { FontAwesome } from '@expo/vector-icons';
 import Colors from '@/src/constants/Colors';
 import { useProduct } from '@/src/api/services';
+import RemoteImage from '@/src/components/RemoteImage';
+
+export const defaultProductImage =
+    'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png';
+
 
 const ProductDetailsScreen = () => {
     const { id: idString } = useLocalSearchParams();
     const id = parseFloat(typeof idString === 'string' ? idString : idString[0]);
-    
+
     const { data: product, error, isLoading } = useProduct(id);
 
     if (isLoading) {
@@ -41,8 +45,9 @@ const ProductDetailsScreen = () => {
                 }}
             />
 
-            <Image
-                source={{ uri: product.image || defaultBarberImage }}
+            <RemoteImage
+                path={product.image}
+                fallback={defaultProductImage}
                 style={styles.image}
             />
 

@@ -1,13 +1,14 @@
-import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
-import { Product } from '../types';
+import { Text, StyleSheet, Image, Pressable } from 'react-native';
+import { Tables } from '../types';
 import Colors from '../constants/Colors';
 import { Link, useSegments } from 'expo-router';
+import RemoteImage from './RemoteImage';
 
 export const defaultProductImage =
     'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png';
 
 type ProductListItemProps = {
-    product: Product;
+    product: Tables<'products'>;
 }
 
 const ProductListItem = ({ product }: ProductListItemProps) => {
@@ -16,14 +17,15 @@ const ProductListItem = ({ product }: ProductListItemProps) => {
     return (
         <Link href={`/${segments[0]}/products/${product.id}`} asChild>
             <Pressable style={styles.container}>
-                <Image
-                    source={{ uri: product.image || defaultProductImage }}
+                <RemoteImage
+                    path={product.image}
+                    fallback={defaultProductImage}
                     style={styles.image}
                     resizeMode='contain'
                 />
 
                 <Text style={styles.title}>{product.name}</Text>
-                <Text style={styles.price}>${product.price}</Text>
+                <Text style={styles.price}>{product.price} KM</Text>
             </Pressable>
         </Link>
     );
