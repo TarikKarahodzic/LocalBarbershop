@@ -1,9 +1,9 @@
 import { Link, Stack, useLocalSearchParams } from 'expo-router';
 import { View, Text, Image, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
-import { defaultBarberImage } from '@/src/components/BarberListItem';
 import { FontAwesome } from '@expo/vector-icons';
 import Colors from '@/src/constants/Colors';
 import { useService } from '@/src/api/services';
+import { defaultServiceImage } from '@/src/components/ServiceListItem';
 
 const ServiceDetailsScreen = () => {
     const { id: idString } = useLocalSearchParams();
@@ -42,12 +42,12 @@ const ServiceDetailsScreen = () => {
             />
 
             <Image
-                source={{ uri: service.image || defaultBarberImage }}
+                source={{ uri: service?.image || defaultServiceImage }}
                 style={styles.image}
             />
 
-            <Text style={styles.title}>{service.name}</Text>
-            <Text style={styles.info}>{service.price}</Text>
+            <Text style={styles.title}>{service?.name}</Text>
+            <Text style={styles.info}>{service?.price}</Text>
         </View>
     );
 };

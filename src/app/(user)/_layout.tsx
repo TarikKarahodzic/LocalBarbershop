@@ -44,6 +44,14 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
+        name="services"
+        options={{
+          title: 'Services',
+          tabBarIcon: ({ color }) => <TabBarIcon name="scissors" color={color} />,
+        }}
+      />
+
+      <Tabs.Screen
         name="menu"
         options={{
           title: 'Home',
@@ -66,17 +74,17 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="services"
-        options={{
-          title: 'Services',
-          tabBarIcon: ({ color }) => <TabBarIcon name="scissors" color={color} />,
-        }}
-      />
-      <Tabs.Screen
         name="products"
         options={{
           title: 'Products',
           tabBarIcon: ({ color }) => <TabBarIcon name="shopping-cart" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: 'Profile',
+          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
         }}
       />
     </Tabs>

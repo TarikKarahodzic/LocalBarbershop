@@ -1,7 +1,7 @@
 import { router, Stack, useLocalSearchParams, useRouter } from 'expo-router';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { useEffect, useState } from 'react';
-import { useBarber, useInsertAppointment, useServiceList } from '@/src/api/services';
+import { useAppointmentList, useBarber, useInsertAppointment, useServiceList } from '@/src/api/services';
 import { supabase } from '@/src/lib/supabase';
 
 const BookingScreen = () => {
@@ -10,6 +10,7 @@ const BookingScreen = () => {
 
     const { data: barber, error: barberError, isLoading: barberLoading } = useBarber(id);
     const { data: services, error: serviceError, isLoading: serviceLoading } = useServiceList();
+    const { data: appointments, isLoading: appointmentsLoading } = useAppointmentList();
 
     const { mutate: insertAppointment } = useInsertAppointment();
 
@@ -55,6 +56,26 @@ const BookingScreen = () => {
 
         return combinedDate;
     };
+
+    const isSlotUnavailable = (timeSlot: string) => {
+        return appointments?.some(appointment => {
+            // Check if the appointment is for the selected barber
+            if (appointment.barber_id !== selectedBarberId) {
+                return false;
+            }
+
+            const appointmentDate = new Date(appointment.time);
+            const selectedDateTime = getSelectedDateTime(selectedDate, timeSlot);
+
+            // Check if the time matches and the date matches
+            return (
+                appointmentDate.getUTCHours() === selectedDateTime.getUTCHours() &&
+                appointmentDate.getUTCMinutes() === selectedDateTime.getUTCMinutes() &&
+                appointmentDate.toDateString() === selectedDateTime.toDateString()
+            );
+        });
+    };
+
 
     const handleBookAppointment = async () => {
         console.log("Selected Barber ID:", selectedBarberId);
@@ -150,15 +171,21 @@ const BookingScreen = () => {
             </View>
             <Text style={styles.serviceTitle}>Select a time slot</Text>
             <View style={styles.timeContainer}>
-                {times.map((time, index) => (
-                    <TouchableOpacity
-                        key={index}
-                        style={[styles.timeBox, selectedTime === time && styles.selectedTimeBox]}
-                        onPress={() => setSelectedTime(time)}
-                    >
-                        <Text style={[styles.timeText, selectedTime === time && styles.selectedText]}>{time}</Text>
-                    </TouchableOpacity>
-                ))}
+                {times.map((time, index) => {
+                    const isUnavailable = isSlotUnavailable(time);
+                    return (
+                        <TouchableOpacity
+                            key={index}
+                            style={[styles.timeBox, selectedTime === time && !isUnavailable && styles.selectedTimeBox, isUnavailable && styles.unavailableTimeBox]}
+                            onPress={() => !isUnavailable && setSelectedTime(time)}
+                            disabled={isUnavailable}  // Disable the button if the time slot is unavailable
+                        >
+                            <Text style={[styles.timeText, selectedTime === time && !isUnavailable && styles.selectedText, isUnavailable && styles.unavailableText]}>
+                                {time}
+                            </Text>
+                        </TouchableOpacity>
+                    );
+                })}
             </View>
 
             <TouchableOpacity style={styles.bookButton} onPress={handleBookAppointment}>
@@ -238,6 +265,13 @@ const styles = StyleSheet.create({
         borderColor: '#888',
         marginBottom: 10,
     },
+    unavailableTimeBox: {
+        backgroundColor: '#d3d3d3',  // Gray out unavailable slots
+        borderColor: '#a9a9a9',
+    },
+    unavailableText: {
+        color: '#888',  // Light gray for unavailable text
+    },
     selectedTimeBox: {
         backgroundColor: '#003972',
         borderColor: '#001f3f',
@@ -280,6 +314,7 @@ const styles = StyleSheet.create({
         padding: 15,
         borderRadius: 10,
         alignItems: 'center',
+        marginBottom: 50,
     },
     bookButtonText: {
         color: '#FFF',
