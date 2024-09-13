@@ -1,8 +1,6 @@
 import { Link, Stack, useLocalSearchParams } from 'expo-router';
-import { View, Text, Image, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
-import { defaultBarberImage } from '@/src/components/BarberListItem';
+import { View, Text, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import Colors from '@/src/constants/Colors';
 import { useNews } from '@/src/api/services';
 
 const NewsDetailScreen = () => {
@@ -23,7 +21,7 @@ const NewsDetailScreen = () => {
         <View style={styles.container}>
             <Stack.Screen
                 options={{
-                    title: news?.name || 'Product Details',
+                    title: news?.title || 'News Details',
                     headerRight: () => (
                         <Link href={`/(admin)/createNews?id=${id}`} asChild>
                             <Pressable>
@@ -31,7 +29,7 @@ const NewsDetailScreen = () => {
                                     <FontAwesome
                                         name="pencil"
                                         size={25}
-                                        color={Colors.light.tint}
+                                        color={'#003972'}
                                         style={{ marginRight: 15, opacity: pressed ? 0.6 : 1 }}
                                     />
                                 )}
@@ -40,15 +38,9 @@ const NewsDetailScreen = () => {
                     ),
                 }}
             />
-
-            <Image
-                source={{ uri: news.image || defaultBarberImage }}
-                style={styles.image}
-            />
-
-            <Text style={styles.title}>{news.name}</Text>
-            <Text style={styles.info}>{news.desc}</Text>
-            <Text style={styles.info}>{news.timestamp}</Text>
+            <Text style={styles.title}>{news?.title}</Text>
+            <Text style={styles.info}>{news?.desc}</Text>
+            <Text style={styles.info}>{news?.timestamp}</Text>
         </View>
     );
 };

@@ -11,9 +11,9 @@ export type Barber = {
   name: string;
   email: string;
   phoneNumber: number;
-  work_start_time: string,
-  work_end_time: string,
-  days_off: string,
+  work_start_time: string;
+  work_end_time: string;
+  days_off: string;
 };
 
 export type Service = {
@@ -21,7 +21,8 @@ export type Service = {
   image: string | null;
   name: string;
   price: number;
-  service_time: number
+  service_time: number;
+  description: string;
 };
 
 export type Product = {
@@ -29,21 +30,22 @@ export type Product = {
   image: string | null;
   name: string;
   price: number;
+  description: string;
 };
 
 export type News = {
-  id: number,
-  title: string,
-  desc: string,
-  timestamp: string,
+  id: number;
+  title: string;
+  desc: string;
+  timestamp: string;
 };
 
 export type Appointments = {
-  id: number,
-  barber_id: number,
-  service_ids: number[],
-  profiles_id: number,
-  time: string,
+  id: number;
+  barber_id: number;
+  service_ids: number[];
+  profiles_id: number;
+  time: string;
 }
 
 export type Profile = {

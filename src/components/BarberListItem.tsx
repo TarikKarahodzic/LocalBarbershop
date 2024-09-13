@@ -4,7 +4,7 @@ import { Link, useSegments } from 'expo-router';
 import { Entypo } from '@expo/vector-icons';
 
 export const defaultBarberImage =
-  'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png';
+  'https://kuysmwqkgvbbdobnncfc.supabase.co/storage/v1/object/sign/default-image/barber-default.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJkZWZhdWx0LWltYWdlL2JhcmJlci1kZWZhdWx0LnBuZyIsImlhdCI6MTcyNjE3OTAzNywiZXhwIjoxNzI4NzcxMDM3fQ.RQNO3FPgaWsQw0SfLxuRWw1nnf5iyfNKGdTW5Ozvphc&t=2024-09-12T22%3A10%3A37.414Z';
 
 type BarberListItemProps = {
   barber: Tables<'barbers'>;
@@ -70,6 +70,7 @@ const mainStyles = StyleSheet.create({
     height: '90%',
     borderRadius: 40,
     marginRight: 20,
+    marginTop: 5
   },
   textContainer: {
     flex: 1,
@@ -77,7 +78,7 @@ const mainStyles = StyleSheet.create({
   barberContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 15,
+    margin: 5,
   },
   additionalInfo: {
     flexDirection: 'row',

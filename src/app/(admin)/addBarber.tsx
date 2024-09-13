@@ -1,18 +1,13 @@
 import { useEffect, useState } from "react";
-import { Text, View, StyleSheet, TextInput, Image, Alert } from "react-native";
+import { Text, View, StyleSheet, TextInput, Alert } from "react-native";
 
 import { defaultBarberImage } from "@/src/components/BarberListItem";
 import Button from "@/src/components/Button";
 import Colors from "@/src/constants/Colors";
 
 import * as ImagePicker from 'expo-image-picker';
-import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { Stack, useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { useBarber, useDeleteBarber, useInsertBarber, useUpdateBarber } from "@/src/api/services";
-import { supabase } from "@/src/lib/supabase";
-
-import * as FileSystem from 'expo-file-system';
-import { v4 as uuidv4 } from 'uuid';
-import { decode } from "base64-arraybuffer";
 
 import 'react-native-get-random-values';
 import RemoteImage from "@/src/components/RemoteImage";
@@ -35,6 +30,7 @@ const CreateBarberScreen = () => {
     const { mutate: deleteBarber } = useDeleteBarber();
     const { data: updatingBarber } = useBarber(id);
 
+    const navigation = useNavigation();
     const router = useRouter();
 
     useEffect(() => {
@@ -83,7 +79,6 @@ const CreateBarberScreen = () => {
             return;
         }
 
-
         insertBarber({ name, image, email, phoneNumber }, {
             onSuccess: () => {
                 resetFields();
@@ -129,19 +124,6 @@ const CreateBarberScreen = () => {
         ]);
     };
 
-    const pickImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-        });
-
-        if (!result.canceled) {
-            setImage(result.assets[0].uri);
-        }
-    };
-
     return (
         <View style={styles.container}>
             <Stack.Screen options={{
@@ -151,9 +133,8 @@ const CreateBarberScreen = () => {
             <RemoteImage
                 path={image}
                 fallback={defaultBarberImage}
-                style={styles.image} 
+                style={styles.image}
             />
-            <Text onPress={pickImage} style={styles.textButton}>Select image</Text>
 
             <Text style={styles.label}>Full name</Text>
             <TextInput
@@ -185,6 +166,7 @@ const CreateBarberScreen = () => {
                     Delete
                 </Text>
             )}
+            <Button onPress={() => navigation.goBack()} text="Back" />
         </View>
     );
 };
@@ -199,6 +181,7 @@ const styles = StyleSheet.create({
         width: '50%',
         aspectRatio: 1,
         alignSelf: 'center',
+        marginBottom: 30,
     },
     textButton: {
         alignSelf: 'center',

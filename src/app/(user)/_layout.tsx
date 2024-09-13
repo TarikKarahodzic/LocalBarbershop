@@ -47,6 +47,7 @@ export default function TabLayout() {
         name="services"
         options={{
           title: 'Services',
+          headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="scissors" color={color} />,
         }}
       />
@@ -77,6 +78,7 @@ export default function TabLayout() {
         name="products"
         options={{
           title: 'Products',
+          headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="shopping-cart" color={color} />,
         }}
       />

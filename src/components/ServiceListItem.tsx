@@ -4,8 +4,7 @@ import Colors from '../constants/Colors';
 import { Link, useSegments } from 'expo-router';
 
 export const defaultServiceImage =
-    'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png';
-
+    'https://kuysmwqkgvbbdobnncfc.supabase.co/storage/v1/object/sign/default-image/service-default.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJkZWZhdWx0LWltYWdlL3NlcnZpY2UtZGVmYXVsdC5wbmciLCJpYXQiOjE3MjYxNzg5NDgsImV4cCI6MTcyODc3MDk0OH0.zm9Tc3UYFBMITDnw5UL5WjZK7sUX-YsLhwsDiZX6Zyw&t=2024-09-12T22%3A09%3A08.878Z';
 type ServiceListItemProps = {
     service: Tables<'services'>;
 }
@@ -23,7 +22,7 @@ const ServiceListItem = ({ service }: ServiceListItemProps) => {
                 />
 
                 <Text style={styles.title}>{service.name}</Text>
-                <Text style={styles.price}>{service.price} KM</Text>
+                <Text style={styles.price}>{service.price}.00 KM</Text>
             </Pressable>
         </Link>
     );
@@ -49,7 +48,7 @@ const styles = StyleSheet.create({
         marginVertical: 5,
     },
     price: {
-        color: Colors.light.tint,
+        color: '#003972',
         fontWeight: 'bold',
     },
 });

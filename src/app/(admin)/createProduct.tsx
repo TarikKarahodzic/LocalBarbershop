@@ -1,18 +1,12 @@
 import { useEffect, useState } from "react";
-import { Text, View, StyleSheet, TextInput, Image, Alert } from "react-native";
+import { Text, View, StyleSheet, TextInput, Alert } from "react-native";
 
 import { defaultProductImage } from "@/src/components/ProductListItem";
 import Button from "@/src/components/Button";
 import Colors from "@/src/constants/Colors";
 
-import * as ImagePicker from 'expo-image-picker';
-import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { Stack, useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { useDeleteProduct, useInsertProduct, useProduct, useUpdateProduct } from "@/src/api/services";
-
-import * as FileSystem from 'expo-file-system';
-import { v4 as uuidv4 } from 'uuid';
-import { supabase } from "@/src/lib/supabase";
-import { decode } from "base64-arraybuffer";
 
 import 'react-native-get-random-values';
 import RemoteImage from "@/src/components/RemoteImage";
@@ -33,6 +27,7 @@ const CreateProductScreen = () => {
     const { mutate: deleteProduct } = useDeleteProduct();
     const { data: updatingProudct } = useProduct(id);
 
+    const navigation = useNavigation();
     const router = useRouter();
 
     useEffect(() => {
@@ -72,13 +67,12 @@ const CreateProductScreen = () => {
     }
 
     const onCreate = async () => {
+        resetFields();
         if (!validateInput()) {
             return;
         }
 
-        const imagePath = await uploadImage();
-
-        insertProduct({ name, price: parseFloat(price), image: imagePath }, {
+        insertProduct({ name, price: parseFloat(price), image }, {
             onSuccess: () => {
                 resetFields();
                 router.back();
@@ -124,71 +118,6 @@ const CreateProductScreen = () => {
         ]);
     };
 
-    const pickImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-        });
-
-        if (!result.canceled) {
-            setImage(result.assets[0].uri);
-        }
-    };
-
-    // const uploadImage = async () => {
-    //     if (!image?.startsWith('file://')) {
-    //         return;
-    //     }
-
-    //     const base64 = await FileSystem.readAsStringAsync(image, {
-    //         encoding: 'base64',
-    //     });
-    //     const filePath = `${uuidv4()}.png`;
-    //     const contentType = 'image/png';
-    //     const { data, error } = await supabase.storage
-    //         .from('product-images')
-    //         .upload(filePath, decode(base64), { contentType });
-    //     console.log(filePath);
-
-    //     if (error) {
-    //         console.error("Image upload failed: ", error.message);
-    //         return null;
-    //     }
-
-    //     if (data) {
-    //         const imageUrl = `${supabase.storage.from('product-images').getPublicUrl(data.path).publicUrl}`;
-    //         return imageUrl;
-    //     }
-    // };
-
-    const uploadImage = async () => {
-        if (!image?.startsWith('file://')) {
-            return;
-        }
-
-        const base64 = await FileSystem.readAsStringAsync(image, {
-            encoding: 'base64',
-        });
-        const filePath = `${uuidv4()}.png`;
-        const contentType = 'image/png';
-
-        const { data, error } = await supabase.storage
-            .from('product-images')
-            .upload(filePath, decode(base64), { contentType });
-
-        if (error) {
-            console.error("Image upload failed: ", error.message);
-            return null;
-        }
-
-        // Return the path of the uploaded image in Supabase storage
-        return filePath;
-    };
-
-
-
     return (
         <View style={styles.container}>
             <Stack.Screen options={{
@@ -200,7 +129,6 @@ const CreateProductScreen = () => {
                 fallback={defaultProductImage}
                 style={styles.image}
             />
-            <Text onPress={pickImage} style={styles.textButton}>Select image</Text>
 
             <Text style={styles.label}>Name</Text>
             <TextInput
@@ -225,6 +153,8 @@ const CreateProductScreen = () => {
                     Delete
                 </Text>
             )}
+            <Button onPress={() => navigation.goBack()} text="Back" />
+
         </View>
     );
 };

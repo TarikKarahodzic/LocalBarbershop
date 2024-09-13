@@ -1,9 +1,9 @@
 import { Link, Stack, useLocalSearchParams } from 'expo-router';
-import { View, Text, Image, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
 import { defaultBarberImage } from '@/src/components/BarberListItem';
 import { FontAwesome } from '@expo/vector-icons';
-import Colors from '@/src/constants/Colors';
 import { useBarber } from '@/src/api/services';
+import RemoteImage from '@/src/components/RemoteImage';
 
 const BarberDetailsScreen = () => {
     const { id: idString } = useLocalSearchParams();
@@ -30,7 +30,7 @@ const BarberDetailsScreen = () => {
                                     <FontAwesome
                                         name="pencil"
                                         size={25}
-                                        color={Colors.light.tint}
+                                        color={'#003972'}
                                         style={{ marginRight: 15, opacity: pressed ? 0.6 : 1 }}
                                     />
                                 )}
@@ -40,36 +40,53 @@ const BarberDetailsScreen = () => {
                 }}
             />
 
-            <Image
-                source={{ uri: barber.image || defaultBarberImage }}
-                style={styles.image}
+            <RemoteImage
+                path={barber?.image}
+                fallback={defaultBarberImage}
+                style={[styles.image, { borderRadius: 10 }]}
             />
 
-            <Text style={styles.title}>{barber.fullName}</Text>
-            <Text style={styles.info}>{barber.email}</Text>
-            <Text style={styles.info}>{barber.phoneNumber}</Text>
+
+            <View style={styles.content}>
+                <Text style={styles.title}>{barber?.name}</Text>
+                <View style={styles.infoContainer}>
+                    <Text style={styles.info}>{barber?.email}</Text>
+                </View>
+                <Text style={styles.info}>{barber?.phoneNumber}</Text>
+            </View>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: 'white',
-        flex: 1,
-        padding: 10,
+        backgroundColor: '#f5f5f5',
+        padding: 20,
     },
     image: {
-        width: '80%',
-        aspectRatio: 1,
-        alignSelf: 'center',
+        width: '100%',
+        height: 200,
+        borderRadius: 10,
+        marginBottom: 10,
+    },
+    content: {
+        backgroundColor: '#fff',
+        padding: 15,
+        borderRadius: 5,
     },
     title: {
-        fontSize: 20,
+        fontSize: 24,
         fontWeight: 'bold',
-        marginVertical: 10,
+        marginBottom: 5,
+    },
+    infoContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 10,
     },
     info: {
         fontSize: 16,
+        lineHeight: 22,
     },
 });
 

@@ -17,7 +17,7 @@ export default function ProductStack() {
                                     <FontAwesome
                                         name="plus-square-o"
                                         size={25}
-                                        color={Colors.light.tint}
+                                        color={'#003972'}
                                         style={{ marginRight: 15, opacity: pressed ? 0.6 : 2 }}
                                     />
                                 )}

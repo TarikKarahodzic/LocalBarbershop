@@ -1,18 +1,12 @@
 import { useEffect, useState } from "react";
-import { Text, View, StyleSheet, TextInput, Image, Alert } from "react-native";
+import { Text, View, StyleSheet, TextInput, Alert } from "react-native";
 
 import Button from "@/src/components/Button";
 import Colors from "@/src/constants/Colors";
 
-import * as ImagePicker from 'expo-image-picker';
 import { Stack, useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { defaultServiceImage } from "@/src/components/ServiceListItem";
 import { useInsertService, useUpdateService, useDeleteService, useService } from "@/src/api/services";
-import { supabase } from "@/src/lib/supabase";
-
-import * as FileSystem from 'expo-file-system';
-import { v4 as uuidv4 } from 'uuid';
-import { decode } from "base64-arraybuffer";
 
 import 'react-native-get-random-values';
 import RemoteImage from "@/src/components/RemoteImage";
@@ -24,8 +18,6 @@ const CreateServiceScreen = () => {
     const [errors, setErrors] = useState('');
     const [image, setImage] = useState<string | null>(null);
 
-    const navigation = useNavigation();
-
     const { id: idString } = useLocalSearchParams();
     const id = parseFloat(typeof idString === 'string' ? idString : idString?.[0]);
     const isUpdating = !!id;
@@ -35,6 +27,7 @@ const CreateServiceScreen = () => {
     const { mutate: deleteService } = useDeleteService();
     const { data: updatingService } = useService(id);
 
+    const navigation = useNavigation();
     const router = useRouter();
 
     useEffect(() => {
@@ -126,21 +119,6 @@ const CreateServiceScreen = () => {
         ]);
     };
 
-    const pickImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            aspect: [4, 3],
-            quality: 1,
-        });
-
-        if (!result.canceled) {
-            setImage(result.assets[0].uri);
-        }
-    };
-
-
-
     return (
         <View style={styles.container}>
             <Stack.Screen options={{
@@ -152,7 +130,6 @@ const CreateServiceScreen = () => {
                 fallback={defaultServiceImage}
                 style={styles.image}
             />
-            <Text onPress={pickImage} style={styles.textButton}>Select image</Text>
 
             <Text style={styles.label}>Name</Text>
             <TextInput
@@ -177,6 +154,8 @@ const CreateServiceScreen = () => {
                     Delete
                 </Text>
             )}
+            <Button onPress={() => navigation.goBack()} text="Back" />
+
         </View>
     );
 };

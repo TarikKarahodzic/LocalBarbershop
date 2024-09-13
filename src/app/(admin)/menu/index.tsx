@@ -20,20 +20,20 @@ export default function TabOneScreen() {
         <Text style={mainStyles.sectionTitle}>Popular Services</Text>
         <View style={serviceStyles.servicesContainer}>
           <View style={serviceStyles.serviceBox}>
-            <Image source={require('../../img/beard.jpg')} style={serviceStyles.serviceImage} />
+            <Image source={require('../../img/beard.png')} style={serviceStyles.serviceImage} />
             <Text style={serviceStyles.serviceTitle}>Beard trim</Text>
           </View>
           <View style={serviceStyles.serviceBox}>
-            <Image source={require('../../img/bearddye.jpg')} style={serviceStyles.serviceImage} />
-            <Text style={serviceStyles.serviceTitle}>Beard coloring</Text>
-          </View>
-          <View style={serviceStyles.serviceBox}>
-            <Image source={require('../../img/dye.jpg')} style={serviceStyles.serviceImage} />
+            <Image source={require('../../img/hairdye.png')} style={serviceStyles.serviceImage} />
             <Text style={serviceStyles.serviceTitle}>Hair dye</Text>
           </View>
           <View style={serviceStyles.serviceBox}>
-            <Image source={require('../../img/haircut.jpg')} style={serviceStyles.serviceImage} />
+            <Image source={require('../../img/haircut.png')} style={serviceStyles.serviceImage} />
             <Text style={serviceStyles.serviceTitle}>Haircut</Text>
+          </View>
+          <View style={serviceStyles.serviceBox}>
+            <Image source={require('../../img/hairwash.png')} style={serviceStyles.serviceImage} />
+            <Text style={serviceStyles.serviceTitle}>Hair wash</Text>
           </View>
         </View>
         <Text style={mainStyles.sectionTitle}>Barbers</Text>
@@ -49,20 +49,20 @@ export default function TabOneScreen() {
         <Text style={mainStyles.sectionTitle}>Our Products</Text>
         <View style={serviceStyles.servicesContainer}>
           <View style={serviceStyles.serviceBox}>
-            <Image source={require('../../img/product.jpg')} style={serviceStyles.serviceImage} />
-            <Text style={serviceStyles.serviceTitle}>Hair paste</Text>
+            <Image source={require('../../img/hair-gel.png')} style={serviceStyles.serviceImage} />
+            <Text style={serviceStyles.serviceTitle}>Hair gel</Text>
           </View>
           <View style={serviceStyles.serviceBox}>
-            <Image source={require('../../img/product.jpg')} style={serviceStyles.serviceImage} />
-            <Text style={serviceStyles.serviceTitle}>Hair powder</Text>
+            <Image source={require('../../img/hair-spray.png')} style={serviceStyles.serviceImage} />
+            <Text style={serviceStyles.serviceTitle}>Hair spray</Text>
           </View>
           <View style={serviceStyles.serviceBox}>
-            <Image source={require('../../img/product.jpg')} style={serviceStyles.serviceImage} />
-            <Text style={serviceStyles.serviceTitle}>Beard gel</Text>
+            <Image source={require('../../img/beard-oil.png')} style={serviceStyles.serviceImage} />
+            <Text style={serviceStyles.serviceTitle}>Beard oil</Text>
           </View>
           <View style={serviceStyles.serviceBox}>
-            <Image source={require('../../img/product.jpg')} style={serviceStyles.serviceImage} />
-            <Text style={serviceStyles.serviceTitle}>Beard paste</Text>
+            <Image source={require('../../img/shampoo.png')} style={serviceStyles.serviceImage} />
+            <Text style={serviceStyles.serviceTitle}>Hair shampoo</Text>
           </View>
         </View>
       </ScrollView>

@@ -1,5 +1,5 @@
 import { Image } from 'react-native';
-import React, { ComponentProps, useEffect, useState } from 'react';
+import React, { ComponentProps, useEffect, useMemo, useState } from 'react';
 import { supabase } from '../lib/supabase';
 
 type RemoteImageProps = {
@@ -20,6 +20,8 @@ const RemoteImage = ({ path, fallback, ...imageProps }: RemoteImageProps) => {
 
             if (error) {
                 console.log(error);
+                setImage(fallback);
+                return;
             }
 
             if (data) {

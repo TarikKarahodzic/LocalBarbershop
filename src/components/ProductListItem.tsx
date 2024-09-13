@@ -1,11 +1,10 @@
-import { Text, StyleSheet, Image, Pressable } from 'react-native';
+import { Text, StyleSheet, Pressable } from 'react-native';
 import { Tables } from '../types';
-import Colors from '../constants/Colors';
 import { Link, useSegments } from 'expo-router';
 import RemoteImage from './RemoteImage';
 
 export const defaultProductImage =
-    'https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png';
+    'https://kuysmwqkgvbbdobnncfc.supabase.co/storage/v1/object/sign/default-image/product-default.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJkZWZhdWx0LWltYWdlL3Byb2R1Y3QtZGVmYXVsdC5wbmciLCJpYXQiOjE3MjYxNzg1OTcsImV4cCI6MTcyODc3MDU5N30.YLRLzHeqD68wqcSI6NQI2AqrxAGcoZ8-HYvc9-HRIik&t=2024-09-12T22%3A03%3A17.846Z';
 
 type ProductListItemProps = {
     product: Tables<'products'>;
@@ -25,7 +24,7 @@ const ProductListItem = ({ product }: ProductListItemProps) => {
                 />
 
                 <Text style={styles.title}>{product.name}</Text>
-                <Text style={styles.price}>{product.price} KM</Text>
+                <Text style={styles.price}>{product.price}.00 KM</Text>
             </Pressable>
         </Link>
     );
@@ -51,7 +50,7 @@ const styles = StyleSheet.create({
         marginVertical: 5,
     },
     price: {
-        color: Colors.light.tint,
+        color: '#003972',
         fontWeight: 'bold',
     },
 });

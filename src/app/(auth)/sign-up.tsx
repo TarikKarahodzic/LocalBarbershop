@@ -8,15 +8,38 @@ import Colors from '../../constants/Colors';
 import { supabase } from '@/src/lib/supabase';
 
 const SignUpScreen = () => {
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   async function signUpWithEmail() {
     setLoading(true);
-    const { error } = await supabase.auth.signUp({ email, password });
 
-    if (error) Alert.alert(error.message);
+    // Sign up the user with email and password
+    const { data, error } = await supabase.auth.signUp({ email, password });
+
+    if (error) {
+      Alert.alert(error.message);
+    } else if (data.user) {
+      // Use UPSERT to avoid duplicate key error on primary key 'id'
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .upsert({
+          id: data.user.id,         // Use the user's ID from the sign-up response
+          full_name: fullName,      // Add full name
+          email: data.user.email,   // Add email (fetched from the user object)
+          phonenumber: phoneNumber, // Add phone number
+        });
+
+      if (profileError) {
+        Alert.alert("Profile creation error", profileError.message);
+      } else {
+        Alert.alert("Success", "Account created successfully!");
+      }
+    }
+
     setLoading(false);
   }
 
@@ -24,11 +47,27 @@ const SignUpScreen = () => {
     <View style={styles.container}>
       <Stack.Screen options={{ title: 'Sign up' }} />
 
+      <Text style={styles.label}>Full name</Text>
+      <TextInput
+        value={fullName}
+        onChangeText={setFullName}
+        placeholder="John Doe"
+        style={styles.input}
+      />
+
       <Text style={styles.label}>Email</Text>
       <TextInput
         value={email}
         onChangeText={setEmail}
         placeholder="jon@gmail.com"
+        style={styles.input}
+      />
+
+      <Text style={styles.label}>Phone number</Text>
+      <TextInput
+        value={phoneNumber}
+        onChangeText={setPhoneNumber}
+        placeholder="387123456"
         style={styles.input}
       />
 
@@ -70,7 +109,7 @@ const styles = StyleSheet.create({
   textButton: {
     alignSelf: 'center',
     fontWeight: 'bold',
-    color: Colors.light.tint,
+    color: '#003972',
     marginVertical: 10,
   },
 });
